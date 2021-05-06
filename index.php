@@ -30,7 +30,7 @@ $user_name = 'Вячеслав'; // укажите здесь ваше имя
         <!-- здесь должен быть PHP код для показа меню и данных пользователя -->
             <?php if ($is_auth === 1): ?>
                 <div class="user-menu__logged">
-                    <p><?= $user_name ?></p>
+                    <p><?=$user_name;?></p>
                     <a class="user-menu__bets" href="pages/my-bets.html">Мои ставки</a>
                     <a class="user-menu__logout" href="#">Выход</a>
                 </div>
