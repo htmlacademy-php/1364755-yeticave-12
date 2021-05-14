@@ -4,10 +4,6 @@ $is_auth = rand(0, 1);
 $user_name = 'Вячеслав'; // укажите здесь ваше имя
 
 $categories = ["Доски и лыжи", "Крепления", "Ботинки", "Одежда", "Инструменты", "Разное"];
-
-// $index = 0;
-// $num_count = count($categories);
-
 $ad_list = [
     [
         "title" => "2014 Rossignol District Snowboard",
@@ -46,6 +42,17 @@ $ad_list = [
         "url" => "img/lot-6.jpg"
     ]
 ];
+
+function format_sum($price) {
+    $format_price = ceil($price);
+    if ($format_price > 1000) {
+        $format_price = number_format($format_price, 0, ',', ' ');
+    };
+    $final_price = $format_price  . ' ' . '₽';
+
+    return $final_price;
+};
+
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -98,13 +105,11 @@ $ad_list = [
         <p class="promo__text">На нашем интернет-аукционе ты найдёшь самое эксклюзивное сноубордическое и горнолыжное снаряжение.</p>
         <ul class="promo__list">
             <!--заполните этот список из массива категорий-->
-            <?php $index = 0; ?>
-            <?php while($index < count($categories)): ?>
+            <?php foreach($categories as $value): ?>
             <li class="promo__item promo__item--boards">
-                <a class="promo__link" href="pages/all-lots.html"><?=$categories[$index];?></a>
+                <a class="promo__link" href="pages/all-lots.html"><?=$value;?></a>
             </li>
-            <?php $index = $index + 1; ?>
-            <?php endwhile; ?>
+            <?php endforeach; ?>
         </ul>
     </section>
     <section class="lots">
@@ -124,7 +129,7 @@ $ad_list = [
                     <div class="lot__state">
                         <div class="lot__rate">
                             <span class="lot__amount">Стартовая цена</span>
-                            <span class="lot__cost"><?=$value["price"];?><b class="rub">р</b></span>
+                            <span class="lot__cost"><?=format_sum($value["price"]);?></span>
                         </div>
                         <div class="lot__timer timer">
                             12:23
@@ -142,13 +147,11 @@ $ad_list = [
     <nav class="nav">
         <ul class="nav__list container">
             <!--заполните этот список из массива категорий-->
-            <?php $index = 0; ?>
-            <?php while($index < count($categories)): ?>
+            <?php foreach($categories as $value): ?>
             <li class="nav__item">
-                <a href="pages/all-lots.html"><?=$categories[$index];?></a>
+                <a href="pages/all-lots.html"><?=$value;?></a>
             </li>
-            <?php $index = $index + 1; ?>
-            <?php endwhile; ?>
+            <?php endforeach; ?>
         </ul>
     </nav>
     <div class="main-footer__bottom container">
