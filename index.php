@@ -44,11 +44,9 @@ $ad_list = [
 ];
 
 function format_sum($price) {
-    $ceil_number = ceil($price);
-    if ($ceil_number > 1000) {
-        $format_price = number_format($ceil_number, 0, ',', ' ');
-    } else {
-        $format_price = $ceil_number;
+    $format_price = ceil($price);
+    if ($format_price > 1000) {
+        $format_price = number_format($format_price, 0, ',', ' ');
     };
     $final_price = $format_price  . ' ' . '₽';
 
