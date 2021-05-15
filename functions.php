@@ -25,8 +25,4 @@ function include_template($name, array $data = []) {
 
     return $result;
 };
-
-function hack_filter($string) {
-    return $text = strip_tags($string);
-};
 ?>
