@@ -38,3 +38,10 @@ function get_date_range($date) {
 
     return $time_to_end = $hours . ':' . $minutes;
 };
+
+function get_hours($date) {
+    $date_end = strtotime($date);
+    $secs_to_end = $date_end - time();
+
+    return $hours = floor($secs_to_end / 3600);
+};
