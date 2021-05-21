@@ -29,7 +29,7 @@
                         </div>
                         <div class="lot__timer timer
                             <?php $hours = get_hours($value["date"]) ?>
-                            <?php if($hours == 0): ?>
+                            <?php if($hours <= 0): ?>
                                 timer--finishing
                             <?php endif; ?>
                         ">
