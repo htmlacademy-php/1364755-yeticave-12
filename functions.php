@@ -26,16 +26,17 @@ function include_template($name, array $data = []) {
 
 function get_date_range($date) {
     $seconds_range = strtotime($date) - time();
+    $hours = str_pad((floor($seconds_range / 3600)), 2, '0', STR_PAD_LEFT);
+
     if ($seconds_range >= 0) {
-        return date("H:i", $seconds_range);
+        return $hours . ':' . date("i", $seconds_range);
     } else {
-        return print('Время истекло');
+        print('Время истекло');
     };
 };
 
 function get_hours($date) {
-    $date_end = strtotime($date);
-    $secs_to_end = $date_end - time();
+    $seconds_range = strtotime($date) - time();
 
-    return floor($secs_to_end / 3600);
+    return floor($seconds_range / 3600);
 };
