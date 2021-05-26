@@ -27,12 +27,13 @@ function include_template($name, array $data = []) {
 function get_date_range($date) {
     $seconds_range = strtotime($date) - time();
     $hours = str_pad((floor($seconds_range / 3600)), 2, '0', STR_PAD_LEFT);
+    $timer = 'Время истекло';
 
     if ($seconds_range >= 0) {
-        return $hours . ':' . date("i", $seconds_range);
-    } else {
-        print('Время истекло');
+        $timer = $hours . ':' . date("i", $seconds_range);
     };
+
+    return $timer;
 };
 
 function get_hours($date) {
