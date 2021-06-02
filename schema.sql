@@ -20,9 +20,7 @@ CREATE TABLE lots (
   date_end DATETIME,
   bet_step INT,
   user_id INT NOT NULL,
-  category_id INT NOT NULL,
-  FOREIGN KEY(user_id) REFERENCES users(user_id),
-  FOREIGN KEY(category_id) REFERENCES categories(category_id)
+  category_id INT NOT NULL
 );
 
 CREATE TABLE bets (
@@ -30,9 +28,7 @@ CREATE TABLE bets (
   date_add DATETIME,
   sum INT,
   user_id INT NOT NULL,
-  lot_id INT NOT NULL,
-  FOREIGN KEY(user_id) REFERENCES users(user_id),
-  FOREIGN KEY(lot_id) REFERENCES lots(lot_id)
+  lot_id INT NOT NULL
 );
 
 CREATE TABLE users (
@@ -43,7 +39,12 @@ CREATE TABLE users (
   password VARCHAR(20) UNIQUE,
   contacts TEXT(100),
   lot_id INT NOT NULL,
-  bet_id INT NOT NULL,
-  FOREIGN KEY(lot_id) REFERENCES lots(lot_id),
-  FOREIGN KEY(bet_id) REFERENCES bets(bet_id)
+  bet_id INT NOT NULL
 );
+
+ALTER TABLE lots ADD FOREIGN KEY(user_id) REFERENCES users(user_id);
+ALTER TABLE lots ADD FOREIGN KEY(category_id) REFERENCES categories(category_id);
+ALTER TABLE bets ADD FOREIGN KEY(user_id) REFERENCES users(user_id);
+ALTER TABLE bets ADD FOREIGN KEY(lot_id) REFERENCES lots(lot_id);
+ALTER TABLE users ADD FOREIGN KEY(lot_id) REFERENCES lots(lot_id);
+ALTER TABLE users ADD FOREIGN KEY(bet_id) REFERENCES bets(bet_id);
