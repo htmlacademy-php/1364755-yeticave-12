@@ -13,7 +13,7 @@ CREATE TABLE categories (
 CREATE TABLE lots (
   lot_id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
   date_add DATETIME,
-  name VARCHAR(30),
+  name VARCHAR(50),
   description TEXT(100),
   img VARCHAR(50),
   starting_price INT,
@@ -38,8 +38,8 @@ CREATE TABLE users (
   name VARCHAR(30),
   password VARCHAR(20) UNIQUE,
   contacts TEXT(100),
-  lot_id INT NOT NULL,
-  bet_id INT NOT NULL
+  lot_id INT,
+  bet_id INT
 );
 
 ALTER TABLE lots ADD FOREIGN KEY(user_id) REFERENCES users(user_id);
