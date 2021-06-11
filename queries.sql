@@ -10,7 +10,7 @@ INSERT INTO users (registration_date, email, name, password, contacts)
 VALUES ('2021-05-26 12:00:00', 'noname@mail.ru', 'Ноунейм', 'qwertyui', 'Телефон: 88005553535'),
        ('2021-01-16 16:00:00', 'luckybet@mail.ru', 'Счастливчик', '12345', 'Телефон: 89537772332');
 
-INSERT INTO lots (date_add, name, description, img, starting_price, date_end, bet_step, user_id, category_id)
+INSERT INTO lots (date_add, title, description, img, starting_price, date_end, bet_step, user_id, category_id)
 VALUES ('2021-06-04 19:08:00', '2014 Rossignol District Snowboard', 'доска заряжена на катку', 'img/lot-1.jpg', '10999',
         '2021-12-07 16:00:00', '100', '2', '1'),
        ('2021-06-04 19:15:00', 'DC Ply Mens 2016/2017 Snowboard', 'попробуй - полюбишь', 'img/lot-2.jpg', '15999',
@@ -41,11 +41,11 @@ WHERE user_id = 2;
 -- получить все категории
 SELECT name FROM categories;
 -- получить самые новые лоты
-SELECT l.name, c.name, starting_price, img, c.category_id FROM lots l JOIN categories c ON l.category_id = c.category_id ORDER BY date_add DESC;
+SELECT title, c.name, starting_price, img, c.category_id FROM lots l JOIN categories c ON l.category_id = c.category_id ORDER BY date_add DESC;
 -- показать лот по его ID
 SELECT l.*, c.name FROM lots l JOIN categories c ON l.category_id = c.category_id WHERE lot_id = 2;
 -- обновить название лота по его идентификатору
-UPDATE lots SET NAME = 'просто крепления' WHERE	lot_id = 3;
+UPDATE lots SET title = 'просто крепления' WHERE	lot_id = 3;
 -- получить список ставок для лота по его идентификатору с сортировкой по дате
 SELECT * FROM bets WHERE lot_id = 2 ORDER BY date_add DESC;
 
