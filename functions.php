@@ -41,3 +41,19 @@ function get_hours($date) {
 
     return floor($seconds_range / 3600);
 };
+
+function get_array($connect, $sql) {
+    if ($connect) {
+        $result = mysqli_query($connect, $sql);
+    } else {
+        $result = mysqli_connect_error();
+    };
+
+   if ($result) {
+        $array = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    } else {
+        $array = mysqli_error($connect);
+    };
+
+    return $array;
+};
