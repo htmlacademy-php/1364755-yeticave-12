@@ -1,16 +1,14 @@
 <?php
-date_default_timezone_set("Europe/Moscow");
-setlocale(LC_ALL, 'ru_RU');
 
 require_once('functions.php');
 require_once('data.php');
 require_once('config/db.php');
 
-$lots = get_lots($connect);
+$lot = get_lot_by_id($connect);
 $categories = get_categories($connect);
 
-$page_content = include_template('main.php', ['categories' => $categories, 'lots' => $lots]);
-$layout_content = include_template('layout.php', [
+$page_content = include_template('lot_main.php', ['categories' => $categories, 'lot' => $lot]);
+$layout_content = include_template('lot_layout.php', [
     'content' => $page_content,
     'categories' => $categories,
     'title' => 'Главная',

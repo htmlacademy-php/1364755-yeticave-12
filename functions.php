@@ -42,15 +42,51 @@ function get_hours($date) {
     return floor($seconds_range / 3600);
 };
 
-function get_array($connect, $sql) {
+function get_lots($connect) {
     if ($connect) {
-        $result = mysqli_query($connect, $sql);
+        $new_lots = 'SELECT l.name AS lot_name, c.name AS category_name, starting_price, img, date_end, description, c.category_id FROM lots l JOIN categories c ON l.category_id = c.category_id ORDER BY date_add DESC';
+        $result = mysqli_query($connect, $new_lots);
     } else {
         $result = mysqli_connect_error();
     };
 
    if ($result) {
         $array = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    } else {
+        $array = mysqli_error($connect);
+    };
+
+    return $array;
+};
+
+function get_categories($connect) {
+    if ($connect) {
+        $all_categories = 'SELECT * FROM categories';
+        $result = mysqli_query($connect, $all_categories);
+    } else {
+        $result = mysqli_connect_error();
+    };
+
+   if ($result) {
+        $array = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    } else {
+        $array = mysqli_error($connect);
+    };
+
+    return $array;
+};
+
+function get_lot_by_id($connect) {
+    if ($connect) {
+        $id = filter_input(INPUT_GET, 'id');
+    	$lot = 'SELECT l.*, l.name AS lot_name, c.name AS category_name FROM lots l JOIN categories c ON l.category_id = c.category_id WHERE lot_id =' . $id;
+        $result = mysqli_query($connect, $lot);
+    } else {
+        $result = mysqli_connect_error();
+    };
+
+   if ($result) {
+        $array = mysqli_fetch_assoc($result);
     } else {
         $array = mysqli_error($connect);
     };
