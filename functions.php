@@ -44,7 +44,7 @@ function get_hours($date) {
 
 function get_lots($connect) {
     if ($connect) {
-        $new_lots = 'SELECT l.name AS lot_name, c.name AS category_name, starting_price, img, date_end, description, c.category_id FROM lots l JOIN categories c ON l.category_id = c.category_id ORDER BY date_add DESC';
+        $new_lots = 'SELECT lot_id, l.name AS lot_name, c.name AS category_name, starting_price, img, date_end, c.category_id FROM lots l JOIN categories c ON l.category_id = c.category_id ORDER BY date_add DESC';
         $result = mysqli_query($connect, $new_lots);
     } else {
         $result = mysqli_connect_error();
@@ -79,7 +79,7 @@ function get_categories($connect) {
 function get_lot_by_id($connect) {
     if ($connect) {
         $id = filter_input(INPUT_GET, 'id');
-    	$lot = 'SELECT l.*, l.name AS lot_name, c.name AS category_name FROM lots l JOIN categories c ON l.category_id = c.category_id WHERE lot_id =' . $id;
+    	$lot = 'SELECT l.*, c.name AS category_name FROM lots l JOIN categories c ON l.category_id = c.category_id WHERE lot_id =' . $id;
         $result = mysqli_query($connect, $lot);
     } else {
         $result = mysqli_connect_error();
