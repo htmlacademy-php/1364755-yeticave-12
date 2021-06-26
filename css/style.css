@@ -53,7 +53,7 @@ body {
 }
 
 main {
-  margin-bottom: 202px;
+  margin-bottom: 202px !important;
 }
 
 body {
@@ -112,10 +112,6 @@ input.visually-hidden {
   width: 1110px;
   margin: 0 auto;
   padding: 0 15px;
-}
-
-main.container {
-  margin-bottom: 202px;
 }
 
 .button {
