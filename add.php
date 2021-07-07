@@ -17,8 +17,10 @@ $layout_content = include_template('layout.php', [
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $filename = $_FILES['image']['name'];
-    $_POST['img'] = $filename;
+    $_POST['img'] = 'uploads/' . $filename;
     move_uploaded_file($_FILES['image']['tmp_name'], 'uploads/' . $filename);
+
+    print_r($_POST);
 
     $sql = 'INSERT INTO lots (date_add, name, category_id, description, img, starting_price, bet_step, date_end, user_id)
     VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, 1)';

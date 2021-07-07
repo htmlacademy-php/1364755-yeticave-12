@@ -14,13 +14,13 @@ CREATE TABLE lots (
   lot_id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
   date_add DATETIME,
   name VARCHAR(50),
+  category_id INT NOT NULL,
   description TEXT(100),
   img VARCHAR(50),
   starting_price INT,
-  date_end DATETIME,
   bet_step INT,
-  user_id INT NOT NULL,
-  category_id INT NOT NULL
+  date_end DATETIME,
+  user_id INT NOT NULL
 );
 
 CREATE TABLE bets (
