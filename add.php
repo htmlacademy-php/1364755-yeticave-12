@@ -15,4 +15,24 @@ $layout_content = include_template('layout.php', [
     'is_auth' => $is_auth
 ]);
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $filename = $_FILES['image']['name'];
+    $_POST['img'] = $filename;
+    move_uploaded_file($_FILES['image']['tmp_name'], 'uploads/' . $filename);
+
+    $sql = 'INSERT INTO lots (date_add, name, category_id, description, img, starting_price, bet_step, date_end, user_id)
+    VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, 1)';
+
+    $stmt = db_get_prepare_stmt($connect, $sql, $_POST);
+    $result = mysqli_stmt_execute($stmt);
+
+    if ($result) {
+        $lot_id = mysqli_insert_id($connect);
+
+        header("Location: lot.php?id=" . $lot_id);
+    } else {
+        print mysqli_error($connect);
+    };
+};
+
 print($layout_content);
