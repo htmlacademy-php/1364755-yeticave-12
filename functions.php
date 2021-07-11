@@ -137,4 +137,43 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
     }
 
     return $stmt;
-}
+};
+
+function getPostValue($name) {
+    return filter_input(INPUT_POST, $name);
+};
+
+function validateLength($value, $min, $max) {
+    if ($value) {
+        $length = strlen($value);
+        if ($length < $min or $length > $max) {
+            return "Значение должно быть от $min до $max символов";
+        }
+    }
+};
+
+function validatePrice($value) {
+    if ($value <= 0) {
+        return "Значение должно быть числом больше 0";
+    };
+};
+
+function validateBetStep($value) {
+    if (!is_int($value) || $value <= 0) {
+        return "Значение должно быть целым числом больше 0";
+    };
+};
+
+function validateCategoryId($id, $category_list) {
+    if (!in_array($id, $category_list)) {
+        return "Выберите категорию из списка";
+    };
+};
+
+function validateDate($value) {
+    $seconds_range = strtotime($value) - time();
+
+    if ($seconds_range < 86400) {
+        return "Указаная дата должна быть больше текущей хотя бы на 1 день";
+    };
+};
