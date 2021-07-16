@@ -11,7 +11,7 @@ $page_content = include_template('lot.php', ['categories' => $categories, 'lot' 
 
 if (empty($lot)) {
     $page_content = include_template('404.php', ['categories' => $categories]);
-};
+}
 
 $layout_content = include_template('layout.php', [
     'content' => $page_content,

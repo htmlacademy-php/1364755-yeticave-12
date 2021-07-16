@@ -14,22 +14,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $rules = [
         'name' => function($value) {
-            return validateLength($value, 1, 50);
+            return validate_length($value, 1, 50);
         },
         'category_id' => function($value) use ($cats_ids) {
-            return validateCategoryId($value, $cats_ids);
+            return validate_category_id($value, $cats_ids);
         },
         'description' => function($value) {
-            return validateLength($value, 1, 100);
+            return validate_length($value, 1, 100);
         },
         'starting_price' => function($value) {
-            return validatePrice($value);
+            return validate_price($value);
         },
         'bet_step' => function($value) {
-            return validateBetStep($value);
+            return validate_bet_step($value);
         },
         'date_end' => function($value) {
-            return validateDate($value);
+            return is_actual_date($value);
         }
     ];
 
@@ -48,13 +48,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $validationResult = $rule($value);
             if ($validationResult) {
                 $errors[$key] = $validationResult;
-            };
-        };
+            }
+        }
 
         if(in_array($key, $required_fields) && empty($value)) {
             $errors[$key] = "Заполните это поле";
-        };
-    };
+        }
+    }
 
     $errors = array_filter($errors);
 
@@ -69,10 +69,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             move_uploaded_file($tmp_name, 'uploads/' . $filename);
             $data['img'] = 'uploads/' . $filename;
-        };
+        }
     } else {
         $errors['image'] = "Вы не загрузили файл";
-    };
+    }
+
+    if (!is_date_valid(get_post_value('date_end'))) {
+        $errors['date_end'] = "Дата должна быть в формате 'ГГГГ-ММ-ДД'";
+    }
 
     if (count($errors)) {
         $page_content = include_template('add-lot.php', ['errors' => $errors, 'categories' => $categories]);
@@ -84,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $result = mysqli_stmt_execute($stmt);
         } else {
             print mysqli_stmt_error($stmt);
-        };
+        }
 
         if ($result) {
             $lot_id = mysqli_insert_id($connect);
@@ -92,11 +96,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             header("Location: lot.php?id=" . $lot_id);
         } else {
             print mysqli_error($connect);
-        };
-    };
+        }
+    }
 } else {
     $page_content = include_template('add-lot.php', ['categories' => $categories]);
-};
+}
 
 $layout_content = include_template('layout.php', [
     'content' => $page_content,

@@ -33,10 +33,10 @@ CREATE TABLE bets (
 
 CREATE TABLE users (
   user_id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-  registration_date DATETIME,
+  registration_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   email VARCHAR(50) UNIQUE,
   name VARCHAR(30),
-  password VARCHAR(20) UNIQUE,
+  password VARCHAR(100) UNIQUE,
   contacts TEXT(100),
   lot_id INT,
   bet_id INT

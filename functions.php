@@ -3,9 +3,9 @@ function format_sum($price) {
     $format_price = ceil($price);
     if ($format_price > 1000) {
         $format_price = number_format($format_price, 0, ',', ' ');
-    };
+    }
     return $format_price  . ' ' . '₽';
-};
+}
 
 function include_template($name, array $data = []) {
     $name = 'templates/' . $name;
@@ -22,7 +22,7 @@ function include_template($name, array $data = []) {
     $result = ob_get_clean();
 
     return $result;
-};
+}
 
 function get_date_range($date) {
     $seconds_range = strtotime($date) - time();
@@ -31,16 +31,16 @@ function get_date_range($date) {
 
     if ($seconds_range >= 0) {
         $timer = $hours . ':' . date("i", $seconds_range);
-    };
+    }
 
     return $timer;
-};
+}
 
 function get_hours($date) {
     $seconds_range = strtotime($date) - time();
 
     return floor($seconds_range / 3600);
-};
+}
 
 function get_lots($connect) {
     if ($connect) {
@@ -48,16 +48,16 @@ function get_lots($connect) {
         $result = mysqli_query($connect, $new_lots);
     } else {
         $result = mysqli_connect_error();
-    };
+    }
 
    if ($result) {
         $array = mysqli_fetch_all($result, MYSQLI_ASSOC);
     } else {
         $array = mysqli_error($connect);
-    };
+    }
 
     return $array;
-};
+}
 
 function get_categories($connect) {
     if ($connect) {
@@ -65,16 +65,16 @@ function get_categories($connect) {
         $result = mysqli_query($connect, $all_categories);
     } else {
         $result = mysqli_connect_error();
-    };
+    }
 
    if ($result) {
         $array = mysqli_fetch_all($result, MYSQLI_ASSOC);
     } else {
         $array = mysqli_error($connect);
-    };
+    }
 
     return $array;
-};
+}
 
 function get_lot_by_id($connect) {
     if ($connect) {
@@ -83,16 +83,16 @@ function get_lot_by_id($connect) {
         $result = mysqli_query($connect, $lot);
     } else {
         $result = mysqli_connect_error();
-    };
+    }
 
    if ($result) {
         $array = mysqli_fetch_assoc($result);
     } else {
         $array = mysqli_error($connect);
-    };
+    }
 
     return $array;
-};
+}
 
 function db_get_prepare_stmt($link, $sql, $data = []) {
     $stmt = mysqli_prepare($link, $sql);
@@ -137,43 +137,50 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
     }
 
     return $stmt;
-};
+}
 
-function getPostValue($name) {
+function get_post_value($name) {
     return filter_input(INPUT_POST, $name);
-};
+}
 
-function validateLength($value, $min, $max) {
+function validate_length($value, $min, $max) {
     if ($value) {
         $length = strlen($value);
         if ($length < $min or $length > $max) {
             return "Значение должно быть от $min до $max символов";
         }
     }
-};
+}
 
-function validatePrice($value) {
+function validate_price($value) {
     if ($value <= 0) {
         return "Значение должно быть числом больше 0";
-    };
-};
+    }
+}
 
-function validateBetStep($value) {
+function validate_bet_step($value) {
     if (!is_int($value) || $value <= 0) {
         return "Значение должно быть целым числом больше 0";
-    };
-};
+    }
+}
 
-function validateCategoryId($id, $category_list) {
+function validate_category_id($id, $category_list) {
     if (!in_array($id, $category_list)) {
         return "Выберите категорию из списка";
-    };
-};
+    }
+}
 
-function validateDate($value) {
+function is_actual_date($value) {
     $seconds_range = strtotime($value) - time();
 
     if ($seconds_range < 86400) {
         return "Указаная дата должна быть больше текущей хотя бы на 1 день";
-    };
-};
+    }
+}
+
+function is_date_valid(string $date) : bool {
+    $format_to_check = 'Y-m-d';
+    $dateTimeObj = date_create_from_format($format_to_check, $date);
+
+    return $dateTimeObj !== false && array_sum(date_get_last_errors()) === 0;
+}
