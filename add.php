@@ -6,6 +6,14 @@ require_once('config/db.php');
 
 $categories = get_categories($connect);
 $cats_ids = array_column($categories, 'category_id');
+$data = filter_input_array(INPUT_POST, [
+    'name' => FILTER_SANITIZE_STRING,
+    'category_id' => FILTER_VALIDATE_INT,
+    'description' => FILTER_SANITIZE_STRING,
+    'starting_price' => FILTER_VALIDATE_INT,
+    'bet_step' => FILTER_VALIDATE_INT,
+    'date_end' => FILTER_SANITIZE_STRING,
+]);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -32,15 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             return is_actual_date($value);
         }
     ];
-
-    $data = filter_input_array(INPUT_POST, [
-        'name' => FILTER_SANITIZE_STRING,
-        'category_id' => FILTER_VALIDATE_INT,
-        'description' => FILTER_SANITIZE_STRING,
-        'starting_price' => FILTER_VALIDATE_INT,
-        'bet_step' => FILTER_VALIDATE_INT,
-        'date_end' => FILTER_SANITIZE_STRING,
-    ]);
 
     foreach ($data as $key => $value) {
         if (isset($rules[$key])) {
@@ -74,17 +73,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $errors['image'] = "Вы не загрузили файл";
     }
 
-    if (!is_date_valid(get_post_value('date_end'))) {
+    if (!is_date_valid($data['date_end'])) {
         $errors['date_end'] = "Дата должна быть в формате 'ГГГГ-ММ-ДД'";
     }
 
     if (count($errors)) {
-        $page_content = include_template('add-lot.php', ['errors' => $errors, 'categories' => $categories]);
+        $page_content = include_template('add-lot.php', ['errors' => $errors, 'categories' => $categories, 'data' => $data]);
     } else {
-        add_lot($connect, $data);
+        if (add_lot($connect, $data)) {
+            $lot_id = mysqli_insert_id($connect);
+
+            header("Location: lot.php?id=" . $lot_id);
+        } else {
+            print mysqli_error($connect);
+        }
     }
 } else {
-    $page_content = include_template('add-lot.php', ['categories' => $categories]);
+    $page_content = include_template('add-lot.php', ['categories' => $categories, 'data' => $data]);
 }
 
 $layout_content = include_template('layout.php', [

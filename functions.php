@@ -139,10 +139,6 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
     return $stmt;
 }
 
-function get_post_value($name) {
-    return filter_input(INPUT_POST, $name);
-}
-
 function validate_length($value, $min, $max) {
     if ($value) {
         $length = strlen($value);
@@ -186,36 +182,34 @@ function is_date_valid(string $date) : bool {
 }
 
 function add_lot($connect, $data) {
-    $sql = 'INSERT INTO lots (name, category_id, description, starting_price, bet_step, date_end, img, user_id)
-    VALUES (?, ?, ?, ?, ?, ?, ?, 1)';
-    $stmt = db_get_prepare_stmt($connect, $sql, $data);
-    $result = mysqli_stmt_execute($stmt);
-
-    if ($result) {
-        $lot_id = mysqli_insert_id($connect);
-
-        header("Location: lot.php?id=" . $lot_id);
+    if($connect) {
+        $sql = 'INSERT INTO lots (name, category_id, description, starting_price, bet_step, date_end, img, user_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?, 1)';
+        $stmt = db_get_prepare_stmt($connect, $sql, $data);
+        $result = mysqli_stmt_execute($stmt);
     } else {
-        print mysqli_error($connect);
+        $result = mysqli_connect_error();
     }
 
     return $result;
 }
 
-function add_user ($connect, $data) {
-    $password = password_hash($data['password'], PASSWORD_DEFAULT);
-
-    $sql = 'INSERT INTO users (email, name, password, contacts)
-    VALUES (?, ?, ?, ?)';
-    $stmt = db_get_prepare_stmt($connect, $sql, [$data['email'], $data['name'], $password, $data['contacts']]);
-    $result = mysqli_stmt_execute($stmt);
-
-    if ($result) {
-        header("Location: /index.php");
-        die();
+function add_user($connect, $data) {
+    if ($connect) {
+        $password = password_hash($data['password'], PASSWORD_DEFAULT);
+        $sql = 'INSERT INTO users (email, name, password, contacts)
+        VALUES (?, ?, ?, ?)';
+        $stmt = db_get_prepare_stmt($connect, $sql, [$data['email'], $data['name'], $password, $data['contacts']]);
+        $result = mysqli_stmt_execute($stmt);
     } else {
-        print mysqli_error($connect);
+        $result = mysqli_connect_error();
     }
 
     return $result;
+}
+
+function get_email_comparison($connect, $data) {
+    $email = mysqli_real_escape_string($connect, $data['email']);
+    $sql = "SELECT user_id FROM users WHERE email = '$email'";
+    return $result = mysqli_query($connect, $sql);
 }

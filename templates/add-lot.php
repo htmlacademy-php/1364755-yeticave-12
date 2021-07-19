@@ -12,7 +12,7 @@
     <div class="form__container-two">
         <div class="form__item <?php if (!empty($errors['name'])) : ?>form__item--invalid<?php endif; ?>">
             <label for="lot-name">Наименование <sup>*</sup></label>
-            <input id="lot-name" type="text" name="name" value="<?= strip_tags(get_post_value('name')) ?>" placeholder="Введите наименование лота">
+            <input id="lot-name" type="text" name="name" value="<?= strip_tags($data['name']) ?>" placeholder="Введите наименование лота">
             <?php if (!empty($errors['name'])) : ?>
                 <span class="form__error"><?= $errors['name'] ?></span>
             <?php endif; ?>
@@ -22,7 +22,7 @@
             <select id="category" name="category_id">
                 <option value="">Выберите категорию</option>
                 <?php foreach ($categories as $category) : ?>
-                    <option value="<?= $category['category_id'] ?>" <?php if ($category['category_id'] == get_post_value('category_id')) : ?>selected<?php endif; ?>>
+                    <option value="<?= $category['category_id'] ?>" <?php if ($category['category_id'] == $data['category_id']) : ?>selected<?php endif; ?>>
                         <?= strip_tags($category['name']) ?>
                     </option>
                 <?php endforeach; ?>
@@ -34,7 +34,7 @@
     </div>
     <div class="form__item form__item--wide <?php if (!empty($errors['description'])) : ?>form__item--invalid<?php endif; ?>">
         <label for="message">Описание <sup>*</sup></label>
-        <textarea id="message" name="description" placeholder="Напишите описание лота"><?= strip_tags(get_post_value('description')) ?></textarea>
+        <textarea id="message" name="description" placeholder="Напишите описание лота"><?= strip_tags($data['description']) ?></textarea>
         <?php if (!empty($errors['description'])) : ?>
             <span class="form__error"><?= $errors['description'] ?></span>
         <?php endif; ?>
@@ -54,21 +54,21 @@
     <div class="form__container-three">
         <div class="form__item form__item--small <?php if (!empty($errors['starting_price'])) : ?>form__item--invalid<?php endif; ?>">
             <label for="lot-rate">Начальная цена <sup>*</sup></label>
-            <input id="lot-rate" type="text" name="starting_price" value="<?= strip_tags(get_post_value('starting_price')) ?>" placeholder="0">
+            <input id="lot-rate" type="text" name="starting_price" value="<?= strip_tags($data['starting_price']) ?>" placeholder="0">
             <?php if (!empty($errors['starting_price'])) : ?>
                 <span class="form__error"><?= $errors['starting_price'] ?></span>
             <?php endif; ?>
         </div>
         <div class="form__item form__item--small <?php if (!empty($errors['bet_step'])) : ?>form__item--invalid<?php endif; ?>">
             <label for="lot-step">Шаг ставки <sup>*</sup></label>
-            <input id="lot-step" type="text" name="bet_step" value="<?= strip_tags(get_post_value('bet_step')) ?>" placeholder="0">
+            <input id="lot-step" type="text" name="bet_step" value="<?= strip_tags($data['bet_step']) ?>" placeholder="0">
             <?php if (!empty($errors['bet_step'])) : ?>
                 <span class="form__error"><?= $errors['bet_step'] ?></span>
             <?php endif; ?>
         </div>
         <div class="form__item <?php if (!empty($errors['date_end'])) : ?>form__item--invalid<?php endif; ?>">
             <label for="lot-date">Дата окончания торгов <sup>*</sup></label>
-            <input class="form__input-date" id="lot-date" type="text" name="date_end" value="<?= strip_tags(get_post_value('date_end')) ?>" placeholder="Введите дату в формате ГГГГ-ММ-ДД">
+            <input class="form__input-date" id="lot-date" type="text" name="date_end" value="<?= strip_tags($data['date_end']) ?>" placeholder="Введите дату в формате ГГГГ-ММ-ДД">
             <?php if (!empty($errors['date_end'])) : ?>
                 <span class="form__error"><?= $errors['date_end'] ?></span>
             <?php endif; ?>
