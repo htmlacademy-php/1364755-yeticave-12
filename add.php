@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
 
-        if(in_array($key, $required_fields) && empty($value)) {
+        if(empty($value)) {
             $errors[$key] = "Заполните это поле";
         }
     }
@@ -81,22 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (count($errors)) {
         $page_content = include_template('add-lot.php', ['errors' => $errors, 'categories' => $categories]);
     } else {
-        $sql = 'INSERT INTO lots (name, category_id, description, starting_price, bet_step, date_end, img, user_id)
-        VALUES (?, ?, ?, ?, ?, ?, ?, 1)';
-        $stmt = db_get_prepare_stmt($connect, $sql, $data);
-        if ($stmt) {
-            $result = mysqli_stmt_execute($stmt);
-        } else {
-            print mysqli_stmt_error($stmt);
-        }
-
-        if ($result) {
-            $lot_id = mysqli_insert_id($connect);
-
-            header("Location: lot.php?id=" . $lot_id);
-        } else {
-            print mysqli_error($connect);
-        }
+        add_lot($connect, $data);
     }
 } else {
     $page_content = include_template('add-lot.php', ['categories' => $categories]);

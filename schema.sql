@@ -36,7 +36,7 @@ CREATE TABLE users (
   registration_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   email VARCHAR(50) UNIQUE,
   name VARCHAR(30),
-  password VARCHAR(100) UNIQUE,
+  password VARCHAR(100),
   contacts TEXT(100),
   lot_id INT,
   bet_id INT

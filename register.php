@@ -43,9 +43,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
 
-        if(in_array($key, $required_fields) && empty($value)) {
+        if(empty($value)) {
             $errors[$key] = "Заполните это поле";
         }
+    }
+
+    if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+        $errors['email'] = "Введите коректный email";
     }
 
     if (empty($errors)) {
@@ -54,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $result = mysqli_query($connect, $sql);
 
         if (mysqli_num_rows($result) > 0) {
-            $errors[] = 'Пользователь с этим email уже зарегистрирован';
+            $errors['email'] = 'Пользователь с этим email уже зарегистрирован';
         }
     }
 
@@ -63,24 +67,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (count($errors)) {
         $page_content = include_template('register.php', ['errors' => $errors, 'categories' => $categories]);
     } else {
-        $password = password_hash($data['password'], PASSWORD_DEFAULT);
-
-        $sql = 'INSERT INTO users (email, name, password, contacts)
-        VALUES (?, ?, ?, ?)';
-        $stmt = db_get_prepare_stmt($connect, $sql, [$data['email'], $data['name'], $password, $data['contacts']]);
-        if ($stmt) {
-            $result = mysqli_stmt_execute($stmt);
-        } else {
-            print mysqli_stmt_error($stmt);
-        }
-
-        if ($result && empty($errors)) {
-            header("Location: /index.php");
-            die();
-        } else {
-            print mysqli_error($connect);
-        }
+        add_user($connect, $data);
     }
+
 } else {
     $page_content = include_template('register.php', ['categories' => $categories]);
 }

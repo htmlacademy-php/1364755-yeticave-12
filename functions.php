@@ -184,3 +184,38 @@ function is_date_valid(string $date) : bool {
 
     return $dateTimeObj !== false && array_sum(date_get_last_errors()) === 0;
 }
+
+function add_lot($connect, $data) {
+    $sql = 'INSERT INTO lots (name, category_id, description, starting_price, bet_step, date_end, img, user_id)
+    VALUES (?, ?, ?, ?, ?, ?, ?, 1)';
+    $stmt = db_get_prepare_stmt($connect, $sql, $data);
+    $result = mysqli_stmt_execute($stmt);
+
+    if ($result) {
+        $lot_id = mysqli_insert_id($connect);
+
+        header("Location: lot.php?id=" . $lot_id);
+    } else {
+        print mysqli_error($connect);
+    }
+
+    return $result;
+}
+
+function add_user ($connect, $data) {
+    $password = password_hash($data['password'], PASSWORD_DEFAULT);
+
+    $sql = 'INSERT INTO users (email, name, password, contacts)
+    VALUES (?, ?, ?, ?)';
+    $stmt = db_get_prepare_stmt($connect, $sql, [$data['email'], $data['name'], $password, $data['contacts']]);
+    $result = mysqli_stmt_execute($stmt);
+
+    if ($result) {
+        header("Location: /index.php");
+        die();
+    } else {
+        print mysqli_error($connect);
+    }
+
+    return $result;
+}
