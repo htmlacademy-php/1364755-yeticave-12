@@ -61,12 +61,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (count($errors)) {
         $page_content = include_template('register.php', ['errors' => $errors, 'categories' => $categories, 'data' => $data]);
     } else {
-        if (add_user($connect, $data)) {
-            header("Location: /index.php");
-            die();
-        } else {
-            print mysqli_error($connect);
-        }
+        add_user($connect, $data);
+        header("Location: /index.php");
+        die();
     }
 
 } else {

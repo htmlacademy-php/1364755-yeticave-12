@@ -80,13 +80,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (count($errors)) {
         $page_content = include_template('add-lot.php', ['errors' => $errors, 'categories' => $categories, 'data' => $data]);
     } else {
-        if (add_lot($connect, $data)) {
-            $lot_id = mysqli_insert_id($connect);
-
-            header("Location: lot.php?id=" . $lot_id);
-        } else {
-            print mysqli_error($connect);
-        }
+        add_lot($connect, $data);
+        $lot_id = mysqli_insert_id($connect);
+        header("Location: lot.php?id=" . $lot_id);
     }
 } else {
     $page_content = include_template('add-lot.php', ['categories' => $categories, 'data' => $data]);
