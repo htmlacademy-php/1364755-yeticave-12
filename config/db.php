@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 $db = [
     'host' => 'localhost',
     'user' => 'root',

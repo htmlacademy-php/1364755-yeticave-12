@@ -6,6 +6,14 @@ require_once('config/db.php');
 
 $categories = get_categories($connect);
 $cats_ids = array_column($categories, 'category_id');
+$data = filter_input_array(INPUT_POST, [
+    'name' => FILTER_SANITIZE_STRING,
+    'category_id' => FILTER_VALIDATE_INT,
+    'description' => FILTER_SANITIZE_STRING,
+    'starting_price' => FILTER_VALIDATE_INT,
+    'bet_step' => FILTER_VALIDATE_INT,
+    'date_end' => FILTER_SANITIZE_STRING,
+]);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -14,33 +22,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $rules = [
         'name' => function($value) {
-            return validateLength($value, 1, 50);
+            return validate_length($value, 1, 50);
         },
         'category_id' => function($value) use ($cats_ids) {
-            return validateCategoryId($value, $cats_ids);
+            return validate_category_id($value, $cats_ids);
         },
         'description' => function($value) {
-            return validateLength($value, 1, 100);
+            return validate_length($value, 1, 100);
         },
         'starting_price' => function($value) {
-            return validatePrice($value);
+            return validate_price($value);
         },
         'bet_step' => function($value) {
-            return validateBetStep($value);
+            return validate_bet_step($value);
         },
         'date_end' => function($value) {
-            return validateDate($value);
+            return is_actual_date($value);
         }
     ];
-
-    $data = filter_input_array(INPUT_POST, [
-        'name' => FILTER_SANITIZE_STRING,
-        'category_id' => FILTER_VALIDATE_INT,
-        'description' => FILTER_SANITIZE_STRING,
-        'starting_price' => FILTER_VALIDATE_INT,
-        'bet_step' => FILTER_VALIDATE_INT,
-        'date_end' => FILTER_SANITIZE_STRING,
-    ]);
 
     foreach ($data as $key => $value) {
         if (isset($rules[$key])) {
@@ -48,13 +47,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $validationResult = $rule($value);
             if ($validationResult) {
                 $errors[$key] = $validationResult;
-            };
-        };
+            }
+        }
 
-        if(in_array($key, $required_fields) && empty($value)) {
+        if(empty($value)) {
             $errors[$key] = "Заполните это поле";
-        };
-    };
+        }
+    }
 
     $errors = array_filter($errors);
 
@@ -69,34 +68,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             move_uploaded_file($tmp_name, 'uploads/' . $filename);
             $data['img'] = 'uploads/' . $filename;
-        };
+        }
     } else {
         $errors['image'] = "Вы не загрузили файл";
-    };
+    }
+
+    if (!is_date_valid($data['date_end'])) {
+        $errors['date_end'] = "Дата должна быть в формате 'ГГГГ-ММ-ДД'";
+    }
 
     if (count($errors)) {
-        $page_content = include_template('add-lot.php', ['errors' => $errors, 'categories' => $categories]);
+        $page_content = include_template('add-lot.php', ['errors' => $errors, 'categories' => $categories, 'data' => $data]);
     } else {
-        $sql = 'INSERT INTO lots (name, category_id, description, starting_price, bet_step, date_end, img, user_id)
-        VALUES (?, ?, ?, ?, ?, ?, ?, 1)';
-        $stmt = db_get_prepare_stmt($connect, $sql, $data);
-        if ($stmt) {
-            $result = mysqli_stmt_execute($stmt);
-        } else {
-            print mysqli_stmt_error($stmt);
-        };
-
-        if ($result) {
-            $lot_id = mysqli_insert_id($connect);
-
-            header("Location: lot.php?id=" . $lot_id);
-        } else {
-            print mysqli_error($connect);
-        };
-    };
+        add_lot($connect, $data);
+        $lot_id = mysqli_insert_id($connect);
+        header("Location: lot.php?id=" . $lot_id);
+    }
 } else {
-    $page_content = include_template('add-lot.php', ['categories' => $categories]);
-};
+    $page_content = include_template('add-lot.php', ['categories' => $categories, 'data' => $data]);
+}
 
 $layout_content = include_template('layout.php', [
     'content' => $page_content,
