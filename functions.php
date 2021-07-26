@@ -1,5 +1,6 @@
 <?php
-function format_sum($price) {
+function format_sum($price)
+{
     $format_price = ceil($price);
     if ($format_price > 1000) {
         $format_price = number_format($format_price, 0, ',', ' ');
@@ -7,12 +8,13 @@ function format_sum($price) {
     return $format_price  . ' ' . '₽';
 }
 
-function include_template($name, array $data = []) {
+function include_template($name, array $data = [])
+{
     $name = 'templates/' . $name;
     $result = '';
 
     if (!is_readable($name)) {
-    return $result;
+        return $result;
     }
 
     ob_start();
@@ -24,7 +26,8 @@ function include_template($name, array $data = []) {
     return $result;
 }
 
-function get_date_range($date) {
+function get_date_range($date)
+{
     $seconds_range = strtotime($date) - time();
     $hours = str_pad((floor($seconds_range / 3600)), 2, '0', STR_PAD_LEFT);
     $timer = 'Время истекло';
@@ -36,21 +39,24 @@ function get_date_range($date) {
     return $timer;
 }
 
-function get_hours($date) {
+function get_hours($date)
+{
     $seconds_range = strtotime($date) - time();
 
     return floor($seconds_range / 3600);
 }
 
-function get_lots($connect) {
+function get_lots($connect)
+{
     if ($connect) {
-        $new_lots = 'SELECT lot_id, l.name AS lot_name, c.name AS category_name, starting_price, img, date_end, c.category_id FROM lots l JOIN categories c ON l.category_id = c.category_id ORDER BY date_add DESC';
+        $new_lots = 'SELECT lot_id, l.name AS lot_name, c.name AS category_name, starting_price, img, date_end,
+        c.category_id FROM lots l JOIN categories c ON l.category_id = c.category_id ORDER BY date_add DESC';
         $result = mysqli_query($connect, $new_lots);
     } else {
         $result = mysqli_connect_error();
     }
 
-   if ($result) {
+    if ($result) {
         $array = mysqli_fetch_all($result, MYSQLI_ASSOC);
     } else {
         $array = mysqli_error($connect);
@@ -59,7 +65,8 @@ function get_lots($connect) {
     return $array;
 }
 
-function get_categories($connect) {
+function get_categories($connect)
+{
     if ($connect) {
         $all_categories = 'SELECT * FROM categories';
         $result = mysqli_query($connect, $all_categories);
@@ -67,7 +74,7 @@ function get_categories($connect) {
         $result = mysqli_connect_error();
     }
 
-   if ($result) {
+    if ($result) {
         $array = mysqli_fetch_all($result, MYSQLI_ASSOC);
     } else {
         $array = mysqli_error($connect);
@@ -76,16 +83,18 @@ function get_categories($connect) {
     return $array;
 }
 
-function get_lot_by_id($connect) {
+function get_lot_by_id($connect)
+{
     if ($connect) {
         $id = filter_input(INPUT_GET, 'id');
-    	$lot = 'SELECT l.*, c.name AS category_name FROM lots l JOIN categories c ON l.category_id = c.category_id WHERE lot_id =' . $id;
+        $lot = 'SELECT l.*, c.name AS category_name FROM lots l JOIN categories c ON l.category_id
+        = c.category_id WHERE lot_id =' . $id;
         $result = mysqli_query($connect, $lot);
     } else {
         $result = mysqli_connect_error();
     }
 
-   if ($result) {
+    if ($result) {
         $array = mysqli_fetch_assoc($result);
     } else {
         $array = mysqli_error($connect);
@@ -94,7 +103,8 @@ function get_lot_by_id($connect) {
     return $array;
 }
 
-function db_get_prepare_stmt($link, $sql, $data = []) {
+function db_get_prepare_stmt($link, $sql, $data = [])
+{
     $stmt = mysqli_prepare($link, $sql);
 
     if ($stmt === false) {
@@ -111,11 +121,9 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
 
             if (is_int($value)) {
                 $type = 'i';
-            }
-            else if (is_string($value)) {
+            } elseif (is_string($value)) {
                 $type = 's';
-            }
-            else if (is_double($value)) {
+            } elseif (is_double($value)) {
                 $type = 'd';
             }
 
@@ -139,7 +147,8 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
     return $stmt;
 }
 
-function validate_length($value, $min, $max) {
+function validate_length($value, $min, $max)
+{
     if ($value) {
         $length = strlen($value);
         if ($length < $min or $length > $max) {
@@ -148,25 +157,29 @@ function validate_length($value, $min, $max) {
     }
 }
 
-function validate_price($value) {
+function validate_price($value)
+{
     if ($value <= 0) {
         return "Значение должно быть числом больше 0";
     }
 }
 
-function validate_bet_step($value) {
+function validate_bet_step($value)
+{
     if (!is_int($value) || $value <= 0) {
         return "Значение должно быть целым числом больше 0";
     }
 }
 
-function validate_category_id($id, $category_list) {
+function validate_category_id($id, $category_list)
+{
     if (!in_array($id, $category_list)) {
         return "Выберите категорию из списка";
     }
 }
 
-function is_actual_date($value) {
+function is_actual_date($value)
+{
     $seconds_range = strtotime($value) - time();
 
     if ($seconds_range < 86400) {
@@ -174,21 +187,24 @@ function is_actual_date($value) {
     }
 }
 
-function is_date_valid(string $date) : bool {
+function is_date_valid(string $date) : bool
+{
     $format_to_check = 'Y-m-d';
     $dateTimeObj = date_create_from_format($format_to_check, $date);
 
     return $dateTimeObj !== false && array_sum(date_get_last_errors()) === 0;
 }
 
-function add_lot($connect, $data) {
-    if(!$connect) {
+function add_lot($connect, $data)
+{
+    if (!$connect) {
         $result = mysqli_connect_error();
     }
-    $sql = 'INSERT INTO lots (name, category_id, description, starting_price, bet_step, date_end, img, user_id)
-    VALUES (?, ?, ?, ?, ?, ?, ?, 1)';
+    $user_id = $_SESSION['user']['user_id'];
+    $sql = "INSERT INTO lots (name, category_id, description, starting_price, bet_step, date_end, img, user_id)
+    VALUES (?, ?, ?, ?, ?, ?, ?, '$user_id')";
     $stmt = db_get_prepare_stmt($connect, $sql, $data);
-    if($stmt) {
+    if ($stmt) {
         $result = mysqli_stmt_execute($stmt);
     } else {
         $result = mysqli_error($connect);
@@ -197,7 +213,8 @@ function add_lot($connect, $data) {
     return $result;
 }
 
-function add_user($connect, $data) {
+function add_user($connect, $data)
+{
     if (!$connect) {
         $result = mysqli_connect_error();
     }
@@ -205,7 +222,7 @@ function add_user($connect, $data) {
     $sql = 'INSERT INTO users (email, name, password, contacts)
     VALUES (?, ?, ?, ?)';
     $stmt = db_get_prepare_stmt($connect, $sql, [$data['email'], $data['name'], $password, $data['contacts']]);
-    if($stmt) {
+    if ($stmt) {
         $result = mysqli_stmt_execute($stmt);
     } else {
         $result = mysqli_error($connect);
@@ -214,8 +231,9 @@ function add_user($connect, $data) {
     return $result;
 }
 
-function get_email_comparison($connect, $data) {
+function get_email_comparison($connect, $data)
+{
     $email = mysqli_real_escape_string($connect, $data['email']);
-    $sql = "SELECT user_id FROM users WHERE email = '$email'";
+    $sql = "SELECT * FROM users WHERE email = '$email'";
     return $result = mysqli_query($connect, $sql);
 }

@@ -13,9 +13,7 @@ $page_content = include_template('main.php', ['categories' => $categories, 'lots
 $layout_content = include_template('layout.php', [
     'content' => $page_content,
     'categories' => $categories,
-    'title' => 'Главная',
-    'user_name' => $user_name,
-    'is_auth' => $is_auth
+    'title' => 'Главная'
 ]);
 
 print($layout_content);
