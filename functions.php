@@ -200,9 +200,8 @@ function add_lot($connect, $data)
     if (!$connect) {
         $result = mysqli_connect_error();
     }
-    $user_id = $_SESSION['user']['user_id'];
-    $sql = "INSERT INTO lots (name, category_id, description, starting_price, bet_step, date_end, img, user_id)
-    VALUES (?, ?, ?, ?, ?, ?, ?, '$user_id')";
+    $sql = 'INSERT INTO lots (name, category_id, description, starting_price, bet_step, date_end, img, user_id)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
     $stmt = db_get_prepare_stmt($connect, $sql, $data);
     if ($stmt) {
         $result = mysqli_stmt_execute($stmt);
