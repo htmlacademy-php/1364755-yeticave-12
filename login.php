@@ -1,8 +1,13 @@
 <?php
 
 require_once('functions.php');
-require_once('data.php');
+require_once('helpers.php');
 require_once('config/db.php');
+
+if (isset($_SESSION['user'])) {
+    header('Location: /index.php');
+    die();
+}
 
 $categories = get_categories($connect);
 $data = filter_input_array(INPUT_POST, [
@@ -33,22 +38,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     } elseif (!empty($data['email']) && !$user) {
         $errors['email'] = 'Такой пользователь не найден';
-    }
-
-    if (count($errors)) {
+    } if (count($errors)) {
         $page_content = include_template('login.php', ['categories' => $categories, 'data' => $data,
         'errors' => $errors]);
     } else {
         header('Location: /index.php');
-        exit();
+        die();
     }
 } else {
     $page_content = include_template('login.php', ['categories' => $categories, 'data' => $data]);
-
-    if (isset($_SESSION['user'])) {
-        header('Location: /index.php');
-        exit;
-    }
 }
 
 $layout_content = include_template('layout.php', [

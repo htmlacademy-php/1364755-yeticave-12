@@ -8,25 +8,25 @@
     </ul>
 </nav>
 <section class="lot-item container">
-        <h2><?= strip_tags($lot["name"]) ?></h2>
+        <h2><?= strip_tags($lot['name']) ?></h2>
         <div class="lot-item__content">
             <div class="lot-item__left">
                 <div class="lot-item__image">
                     <img src="<?= $lot["img"] ?>" width="730" height="548" alt="Сноуборд">
                 </div>
-                <p class="lot-item__category">Категория: <span><?= strip_tags($lot["category_name"]) ?></span></p>
-                <p class="lot-item__description"><?= $lot["description"] ?></p>
+                <p class="lot-item__category">Категория: <span><?= strip_tags($lot['category_name']) ?></span></p>
+                <p class="lot-item__description"><?= $lot['description'] ?></p>
             </div>
             <div class="lot-item__right">
                 <?php if (isset($_SESSION['user'])) : ?>
                 <div class="lot-item__state">
                     <div class="lot-item__timer timer
-                        <?php $hours = get_hours($lot["date_end"]) ?>
+                        <?php $hours = get_hours($lot['date_end']) ?>
                         <?php if ($hours <= 0) : ?>
                             timer--finishing
                         <?php endif; ?>
                     ">
-                        <?= get_date_range($lot["date_end"]) ?>
+                        <?= get_date_range($lot['date_end']) ?>
                     </div>
                     <div class="lot-item__cost-state">
                         <div class="lot-item__rate">

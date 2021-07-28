@@ -7,28 +7,19 @@
         <?php endforeach; ?>
     </ul>
 </nav>
-<form class="form container
-<?php if (!empty($errors)) : ?>
-    form--invalid
-<?php endif; ?>" action="login.php" method="post">
+<form class="form container <?= !empty($errors) ? 'form--invalid' : '' ?>" action="login.php" method="post">
     <h2>Вход</h2>
-    <div class="form__item
-    <?php if (!empty($errors['email'])) : ?>
-        form__item--invalid
-    <?php endif; ?>">
+    <div class="form__item <?= !empty($errors['email']) ? 'form__item--invalid' : '' ?>">
         <label for="email">E-mail <sup>*</sup></label>
-        <input id="email" type="text" name="email" value="<?= strip_tags($data['email']) ?>"
+        <input id="email" type="text" name="email" value="<?= !empty($data['email']) ? strip_tags($data['email']) : '' ?>"
         placeholder="Введите e-mail">
         <?php if (!empty($errors['email'])) : ?>
             <span class="form__error"><?= $errors['email'] ?></span>
         <?php endif; ?>
     </div>
-    <div class="form__item form__item--last
-    <?php if (!empty($errors['password'])) : ?>
-        form__item--invalid
-    <?php endif; ?>">
+    <div class="form__item form__item--last <?= !empty($errors['password']) ? 'form__item--invalid' : '' ?>">
         <label for="password">Пароль <sup>*</sup></label>
-        <input id="password" type="password" name="password" value="<?= strip_tags($data['password']) ?>"
+        <input id="password" type="password" name="password" value="<?= !empty($data['password']) ? strip_tags($data['password']) : '' ?>"
         placeholder="Введите пароль">
         <?php if (!empty($errors['password'])) : ?>
             <span class="form__error"><?= $errors['password'] ?></span>

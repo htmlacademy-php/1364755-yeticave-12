@@ -1,14 +1,14 @@
 <?php
 
 require_once('functions.php');
-require_once('data.php');
+require_once('helpers.php');
 require_once('config/db.php');
 
 if (!isset($_SESSION['user'])) {
     http_response_code(403);
     die();
 }
-$_POST['user_id'] = $_SESSION['user']['user_id'];
+
 $categories = get_categories($connect);
 $cats_ids = array_column($categories, 'category_id');
 $data = filter_input_array(INPUT_POST, [
@@ -18,7 +18,6 @@ $data = filter_input_array(INPUT_POST, [
     'starting_price' => FILTER_VALIDATE_INT,
     'bet_step' => FILTER_VALIDATE_INT,
     'date_end' => FILTER_SANITIZE_STRING,
-    'user_id' => FILTER_VALIDATE_INT
 ]);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -87,12 +86,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         'data' => $data]);
     }
 
-    var_dump($data);
-    var_dump($_POST);
-
+    $data['user_id'] = $_SESSION['user']['user_id'];
     add_lot($connect, $data);
     $lot_id = mysqli_insert_id($connect);
     header("Location: lot.php?id=" . $lot_id);
+    die();
 } else {
     $page_content = include_template('add-lot.php', ['categories' => $categories, 'data' => $data]);
 }
