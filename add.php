@@ -81,16 +81,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $errors['date_end'] = "Дата должна быть в формате 'ГГГГ-ММ-ДД'";
     }
 
-    if (count($errors)) {
+    $data['user_id'] = $_SESSION['user']['user_id'];
+
+    if (empty($errors)) {
+        add_lot($connect, $data);
+        $lot_id = mysqli_insert_id($connect);
+        header("Location: lot.php?id=" . $lot_id);
+        die();
+    } else {
         $page_content = include_template('add-lot.php', ['errors' => $errors, 'categories' => $categories,
         'data' => $data]);
     }
-
-    $data['user_id'] = $_SESSION['user']['user_id'];
-    add_lot($connect, $data);
-    $lot_id = mysqli_insert_id($connect);
-    header("Location: lot.php?id=" . $lot_id);
-    die();
 } else {
     $page_content = include_template('add-lot.php', ['categories' => $categories, 'data' => $data]);
 }

@@ -48,3 +48,5 @@ ALTER TABLE bets ADD FOREIGN KEY(user_id) REFERENCES users(user_id);
 ALTER TABLE bets ADD FOREIGN KEY(lot_id) REFERENCES lots(lot_id);
 ALTER TABLE users ADD FOREIGN KEY(lot_id) REFERENCES lots(lot_id);
 ALTER TABLE users ADD FOREIGN KEY(bet_id) REFERENCES bets(bet_id);
+
+CREATE FULLTEXT INDEX lots_ft_search ON lots(name, description);

@@ -32,8 +32,7 @@
                             <?php $hours = get_hours($lot['date_end']) ?>
                             <?php if ($hours <= 0) : ?>
                                 timer--finishing
-                            <?php endif; ?>
-                        ">
+                            <?php endif; ?>">
                                 <?= get_date_range($lot['date_end']) ?>
                             </div>
                         </div>
