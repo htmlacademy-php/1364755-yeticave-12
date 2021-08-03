@@ -26,7 +26,7 @@ function get_date_range($date)
 {
     $seconds_range = strtotime($date) - time();
     $hours = str_pad((floor($seconds_range / 3600)), 2, '0', STR_PAD_LEFT);
-    $timer = "Время истекло";
+    $timer = 'Время истекло';
 
     if ($seconds_range >= 0) {
         $timer = $hours . ':' . date("i", $seconds_range);
@@ -59,9 +59,9 @@ function get_hours($date)
 function get_lots($link)
 {
     if ($link) {
-        $new_lots = "SELECT lot_id, l.name AS lot_name, c.name AS category_name, starting_price, img, date_end,
-        c.category_id FROM lots l JOIN categories c ON l.category_id = c.category_id ORDER BY date_add DESC";
-        $result = mysqli_query($link, $new_lots);
+        $sql = 'SELECT lot_id, l.name AS lot_name, c.name AS category_name, starting_price, img, date_end,
+        c.category_id FROM lots l JOIN categories c ON l.category_id = c.category_id ORDER BY date_add DESC';
+        $result = mysqli_query($link, $sql);
     } else {
         $result = mysqli_connect_error();
     }
@@ -85,8 +85,8 @@ function get_lots($link)
 function get_categories($link)
 {
     if ($link) {
-        $all_categories = "SELECT * FROM categories";
-        $result = mysqli_query($link, $all_categories);
+        $sql = 'SELECT * FROM categories';
+        $result = mysqli_query($link, $sql);
     } else {
         $result = mysqli_connect_error();
     }
@@ -104,27 +104,26 @@ function get_categories($link)
  * Показывает лот по его идентификатору
  *
  * @param mysqli $link  Ресурс соединения
+ * @param mixed Данные для заполнения
  *
  * @return array Массив с опубликованным лотом
  */
-function get_lot_by_id($link)
+function get_lot_by_id($link, $data)
 {
-    if ($link) {
-        $id = filter_input(INPUT_GET, 'id');
-        $lot = "SELECT l.*, c.name AS category_name FROM lots l JOIN categories c ON l.category_id
-        = c.category_id WHERE lot_id =" . $id;
-        $result = mysqli_query($link, $lot);
-    } else {
+    if (!$link) {
         $result = mysqli_connect_error();
     }
-
-    if ($result) {
-        $array = mysqli_fetch_assoc($result);
+    $sql = 'SELECT l.*, c.name AS category_name FROM lots l JOIN categories c ON l.category_id
+    = c.category_id WHERE lot_id = ?';
+    $stmt = db_get_prepare_stmt($link, $sql, [$data]);
+    if ($stmt) {
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
     } else {
-        $array = mysqli_error($link);
+        $result = mysqli_error($link);
     }
 
-    return $array;
+    return mysqli_fetch_array($result);
 }
 
 /**
@@ -156,7 +155,7 @@ function validate_length($value, $min, $max)
 function validate_price($value)
 {
     if ($value <= 0) {
-        return "Значение должно быть числом больше 0";
+        return 'Значение должно быть числом больше 0';
     }
 }
 
@@ -170,7 +169,7 @@ function validate_price($value)
 function validate_bet_step($value)
 {
     if (!is_int($value) || $value <= 0) {
-        return "Значение должно быть целым числом больше 0";
+        return 'Значение должно быть целым числом больше 0';
     }
 }
 
@@ -185,7 +184,7 @@ function validate_bet_step($value)
 function validate_category_id($id, $category_list)
 {
     if (!in_array($id, $category_list)) {
-        return "Выберите категорию из списка";
+        return 'Выберите категорию из списка';
     }
 }
 
@@ -201,7 +200,7 @@ function is_actual_date($value)
     $seconds_range = strtotime($value) - time();
 
     if ($seconds_range < 86400) {
-        return "Указаная дата должна быть больше текущей хотя бы на 1 день";
+        return 'Указаная дата должна быть больше текущей хотя бы на 1 день';
     }
 }
 
@@ -218,8 +217,8 @@ function add_lot($link, $data)
     if (!$link) {
         $result = mysqli_connect_error();
     }
-    $sql = "INSERT INTO lots (name, category_id, description, starting_price, bet_step, date_end, img, user_id)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = 'INSERT INTO lots (name, category_id, description, starting_price, bet_step, date_end, img, user_id)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
     $stmt = db_get_prepare_stmt($link, $sql, $data);
     if ($stmt) {
         $result = mysqli_stmt_execute($stmt);
@@ -244,8 +243,8 @@ function add_user($link, $data)
         $result = mysqli_connect_error();
     }
     $password = password_hash($data['password'], PASSWORD_DEFAULT);
-    $sql = "INSERT INTO users (email, name, password, contacts)
-    VALUES (?, ?, ?, ?)";
+    $sql = 'INSERT INTO users (email, name, password, contacts)
+    VALUES (?, ?, ?, ?)';
     $stmt = db_get_prepare_stmt($link, $sql, [$data['email'], $data['name'], $password, $data['contacts']]);
     if ($stmt) {
         $result = mysqli_stmt_execute($stmt);
@@ -266,9 +265,19 @@ function add_user($link, $data)
  */
 function get_email_comparison($link, $data)
 {
+    if (!$link) {
+        $result = mysqli_connect_error();
+    }
     $email = mysqli_real_escape_string($link, $data['email']);
-    $sql = "SELECT * FROM users WHERE email = '$email'";
-    return mysqli_query($link, $sql);
+    $sql = 'SELECT * FROM users WHERE email = ?';
+    $stmt = db_get_prepare_stmt($link, $sql, [$email]);
+    if ($stmt) {
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+    } else {
+        $result = mysqli_error($link);
+    }
+    return $result;
 }
 
 /**
@@ -281,12 +290,20 @@ function get_email_comparison($link, $data)
  */
 function search_by_lots($link, $data)
 {
-    $sql = "SELECT lot_id, l.name AS lot_name, c.name AS category_name, starting_price, img, date_end,
+    if (!$link) {
+        $result = mysqli_connect_error();
+    }
+    $sql = 'SELECT lot_id, l.name AS lot_name, c.name AS category_name, starting_price, img, date_end,
     c.category_id FROM lots l JOIN categories c ON l.category_id = c.category_id
     WHERE date_end > NOW() AND MATCH(l.name, description)
-    AGAINST(?) ORDER BY date_add DESC LIMIT ? OFFSET ?";
+    AGAINST(?) ORDER BY date_add DESC LIMIT ? OFFSET ?';
     $stmt = db_get_prepare_stmt($link, $sql, $data);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
+    if ($stmt) {
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+    } else {
+        $result = mysqli_error($link);
+    }
+
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }

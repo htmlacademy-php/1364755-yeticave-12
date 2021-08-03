@@ -49,7 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $errors['email'] = 'Введите коректный email';
     }
 
-
     if (mysqli_fetch_array(get_email_comparison($connect, $data), MYSQLI_ASSOC)) {
         $errors['email'] = 'Пользователь с этим email уже зарегистрирован';
     }
@@ -59,11 +58,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (count($errors)) {
         $page_content = include_template('register.php', ['errors' => $errors, 'categories' => $categories,
         'data' => $data]);
+    } else {
+        add_user($connect, $data);
+        header("Location: /login.php");
+        die();
     }
-
-    add_user($connect, $data);
-    header("Location: /login.php");
-    die();
 } else {
     $page_content = include_template('register.php', ['categories' => $categories, 'data' => $data]);
 }

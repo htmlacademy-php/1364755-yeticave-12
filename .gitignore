@@ -1,5 +1,6 @@
 .DS_Store
 .idea
+.vscode
 *.ai
 *.log
 *.pdf
@@ -9,3 +10,4 @@ Thumbs.db
 vendor
 uploads/*
 !uploads/.gitkeep
+
