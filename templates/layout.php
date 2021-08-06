@@ -21,6 +21,9 @@
                 <form class="main-header__search" method="get" action="search.php" autocomplete="off">
                     <input type="search" name="search" value="<?= !empty($search) ? strip_tags($search) : '' ?>" placeholder="Поиск лота">
                     <input class="main-header__search-btn" type="submit" name="find" value="Найти">
+                    <?php if (!empty($error)) : ?>
+                        <b><?= $error ?></b>
+                    <?php endif; ?>
                 </form>
                 <a class="main-header__add-lot button" href="add.php">Добавить лот</a>
 

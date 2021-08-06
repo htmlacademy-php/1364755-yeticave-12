@@ -13,7 +13,13 @@ $page_items = 9;
 $pages = [];
 $pages_count = 0;
 
-if ($search) {
+$error = validate_length($search, 4, 15);
+if ($error) {
+    $lots = get_lots($connect);
+    $page_content = include_template('main.php', ['categories' => $categories, 'lots' => $lots]);
+}
+
+if ($search && !$error) {
     $offset = ($current_page - 1) * $page_items;
     $data = [$search, $page_items, $offset];
     $lots = search_by_lots($connect, $data);
@@ -23,11 +29,15 @@ if ($search) {
     if ($pages_count > 0) {
         $pages = range(1, $pages_count);
     }
+    $page_content = include_template('search.php', [
+        'categories' => $categories, 'lots' => $lots, 'search' => $search,
+        'pages' => $pages, 'current_page' => $current_page
+    ]);
 }
 
-$page_content = include_template('search.php', ['categories' => $categories, 'lots' => $lots, 'search' => $search,
-'pages' => $pages, 'current_page' => $current_page]);
+
 $layout_content = include_template('layout.php', [
+    'error' => $error,
     'content' => $page_content,
     'search' => $search,
     'categories' => $categories,
