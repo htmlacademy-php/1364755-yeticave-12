@@ -78,19 +78,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (!is_date_valid($data['date_end']) && !empty($data['date_end'])) {
-        $errors['date_end'] = "Дата должна быть в формате 'ГГГГ-ММ-ДД'";
-    }
-
-    if (count($errors)) {
-        $page_content = include_template('add-lot.php', ['errors' => $errors, 'categories' => $categories,
-        'data' => $data]);
+        $errors['date_end'] = 'Дата должна быть в формате ГГГГ-ММ-ДД';
     }
 
     $data['user_id'] = $_SESSION['user']['user_id'];
-    add_lot($connect, $data);
-    $lot_id = mysqli_insert_id($connect);
-    header("Location: lot.php?id=" . $lot_id);
-    die();
+
+    if (empty($errors)) {
+        add_lot($connect, $data);
+        $lot_id = mysqli_insert_id($connect);
+        header("Location: lot.php?id=" . $lot_id);
+        die();
+    }
+
+    $page_content = include_template('add-lot.php', ['errors' => $errors, 'categories' => $categories,
+    'data' => $data]);
 } else {
     $page_content = include_template('add-lot.php', ['categories' => $categories, 'data' => $data]);
 }
