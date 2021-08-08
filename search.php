@@ -35,6 +35,10 @@ if ($search && !$error) {
     ]);
 }
 
+if ($current_page < 1 || ($current_page > $pages_count && $pages_count != 0)) {
+    http_response_code(404);
+    die();
+}
 
 $layout_content = include_template('layout.php', [
     'error' => $error,

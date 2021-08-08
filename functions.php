@@ -307,3 +307,30 @@ function search_by_lots($link, $data)
 
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
+
+/**
+ * Сортировка лотов по категориям
+ *
+ * @param mysqli $link  Ресурс соединения
+ * @param array $data Данные для заполнения
+ *
+ * @return array Массив лотов, отсортированный категориям
+ */
+function get_lots_by_category($link, $data)
+{
+    if (!$link) {
+        $result = mysqli_connect_error();
+    }
+    $sql = 'SELECT lot_id, l.name AS lot_name, c.name AS category_name, starting_price, img, date_end,
+    c.category_id FROM lots l JOIN categories c ON l.category_id = c.category_id WHERE date_end > NOW()
+    AND c.category_id = ?';
+    $stmt = db_get_prepare_stmt($link, $sql, [$data]);
+    if ($stmt) {
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+    } else {
+        $result = mysqli_error($link);
+    }
+
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
