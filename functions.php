@@ -323,8 +323,8 @@ function get_lots_by_category($link, $data)
     }
     $sql = 'SELECT lot_id, l.name AS lot_name, c.name AS category_name, starting_price, img, date_end,
     c.category_id FROM lots l JOIN categories c ON l.category_id = c.category_id WHERE date_end > NOW()
-    AND c.category_id = ?';
-    $stmt = db_get_prepare_stmt($link, $sql, [$data]);
+    AND c.category_id = ? ORDER BY date_add DESC LIMIT ? OFFSET ?';
+    $stmt = db_get_prepare_stmt($link, $sql, $data);
     if ($stmt) {
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);

@@ -2,7 +2,7 @@
     <!-- nav__item--current -->
     <ul class="nav__list container">
         <?php foreach ($categories as $category) : ?>
-            <li class="nav__item">
+            <li class="nav__item <?= isset($category_name) == true && $category['name'] == $category_name ? 'nav__item--current' : '' ?>">
                 <a href="all-lots.php?category_id=<?= $category['category_id'] ?>"><?= strip_tags($category['name']) ?></a>
             </li>
         <?php endforeach; ?>
