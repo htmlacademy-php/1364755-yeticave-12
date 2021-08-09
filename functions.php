@@ -335,6 +335,14 @@ function get_lots_by_category($link, $data)
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
+/**
+ * Добавляет ставку к лоту
+ *
+ * @param mysqli $link  Ресурс соединения
+ * @param array $data Данные для заполнения
+ *
+ * @return bool Возвращает true в случае успешного завершения или false в случае возникновения ошибки
+ */
 function add_bet($link, $data)
 {
     if (!$link) {
@@ -349,4 +357,29 @@ function add_bet($link, $data)
     }
 
     return $result;
+}
+
+/**
+ * Получить список ставок для лота по его идентификатору с сортировкой по дате
+ *
+ * @param mysqli $link  Ресурс соединения
+ * @param array $data Данные для заполнения
+ *
+ * @return array Массив лотов, отсортированный по дате добавления от новых к старым
+ */
+function get_bets_by_lot_id($link, $data)
+{
+    if (!$link) {
+        $result = mysqli_connect_error();
+    }
+    $sql = 'SELECT * FROM bets WHERE lot_id = ? ORDER BY date_add DESC;';
+    $stmt = db_get_prepare_stmt($link, $sql, $data);
+    if ($stmt) {
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+    } else {
+        $result = mysqli_error($link);
+    }
+
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
