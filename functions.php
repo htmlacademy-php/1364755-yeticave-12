@@ -334,3 +334,19 @@ function get_lots_by_category($link, $data)
 
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
+
+function add_bet($link, $data)
+{
+    if (!$link) {
+        $result = mysqli_connect_error();
+    }
+    $sql = 'INSERT INTO bets (sum, user_id, lot_id) VALUES ( ?, ?, ?)';
+    $stmt= db_get_prepare_stmt($link, $sql, $data);
+    if ($stmt) {
+        $result = mysqli_stmt_execute($stmt);
+    } else {
+        $result = mysqli_error($link);
+    }
+
+    return $result;
+}
