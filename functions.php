@@ -372,7 +372,7 @@ function get_bets_by_lot_id($link, $data)
     if (!$link) {
         $result = mysqli_connect_error();
     }
-    $sql = 'SELECT * FROM bets WHERE lot_id = ? ORDER BY date_add DESC;';
+    $sql = 'SELECT * FROM bets WHERE lot_id = ? ORDER BY date_add DESC';
     $stmt = db_get_prepare_stmt($link, $sql, $data);
     if ($stmt) {
         mysqli_stmt_execute($stmt);
@@ -382,4 +382,52 @@ function get_bets_by_lot_id($link, $data)
     }
 
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+/**
+ * Добавляет в таблицу с пользователями отпубликованный ими лот
+ *
+ * @param mysqli $link  Ресурс соединения
+ * @param array $data Данные для заполнения
+ *
+ * @return bool Возвращает true в случае успешного завершения или false в случае возникновения ошибки
+ */
+function add_lot_id_to_user($link, $data)
+{
+    if (!$link) {
+        $result = mysqli_connect_error();
+    }
+    $sql = 'UPDATE users SET lot_id = ? WHERE user_id = ?';
+    $stmt= db_get_prepare_stmt($link, $sql, $data);
+    if ($stmt) {
+        $result = mysqli_stmt_execute($stmt);
+    } else {
+        $result = mysqli_error($link);
+    }
+
+    return $result;
+}
+
+/**
+ * Добавляет в таблицу с пользователями сделанную ими ставку
+ *
+ * @param mysqli $link  Ресурс соединения
+ * @param array $data Данные для заполнения
+ *
+ * @return bool Возвращает true в случае успешного завершения или false в случае возникновения ошибки
+ */
+function add_bet_id_to_user($link, $data)
+{
+    if (!$link) {
+        $result = mysqli_connect_error();
+    }
+    $sql = 'UPDATE users SET bet_id = ? WHERE user_id = ?';
+    $stmt= db_get_prepare_stmt($link, $sql, $data);
+    if ($stmt) {
+        $result = mysqli_stmt_execute($stmt);
+    } else {
+        $result = mysqli_error($link);
+    }
+
+    return $result;
 }

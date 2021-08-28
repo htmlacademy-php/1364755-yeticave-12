@@ -40,7 +40,7 @@
                     <form class="lot-item__form" action="lot.php?id=<?= $lot['lot_id'] ?>" method="post" autocomplete="off">
                         <p class="lot-item__form-item form__item <?= !empty($errors) ? 'form__item--invalid' : '' ?>">
                             <label for="cost">Ваша ставка</label>
-                            <input id="cost" type="text" name="sum" value="<?= !empty($value) ? strip_tags($value) : '' ?>" placeholder="12 000">
+                            <input id="cost" type="text" name="sum" value="<?= !empty($value) ? strip_tags($value) : '' ?>" placeholder="<?= format_sum($min_bet) ?>">
                             <?php if (!empty($errors)) : ?>
                                 <span class="form__error"><?= $errors ?></span>
                             <?php endif; ?>

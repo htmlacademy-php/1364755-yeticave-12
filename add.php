@@ -86,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($errors)) {
         add_lot($connect, $data);
         $lot_id = mysqli_insert_id($connect);
+        add_lot_id_to_user($connect, [$lot_id, $data['user_id']]);
         header("Location: lot.php?id=" . $lot_id);
         die();
     }

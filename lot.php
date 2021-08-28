@@ -24,7 +24,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (empty($errors)) {
-        $bet = add_bet($connect, $data);
+        add_bet($connect, $data);
+        $bet_id = mysqli_insert_id($connect);
+        add_bet_id_to_user($connect, [$bet_id, $data['user_id']]);
+        header("Refresh:0");
+        die();
     }
 }
 
