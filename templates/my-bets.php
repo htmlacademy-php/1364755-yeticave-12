@@ -43,18 +43,18 @@
                         timer--end
                     <?php endif; ?>
                     ">
-                    <?php if ($bet['user_id'] == $bet['user_win_id']) : ?>
-                        Ставка выиграла
-                    <?php else : ?>
-                        <?= get_date_range($bet['date_end']) ?>
-                    <?php endif; ?>
+                        <?php if ($bet['user_id'] == $bet['user_win_id']) : ?>
+                            Ставка выиграла
+                        <?php else : ?>
+                            <?= get_date_range($bet['date_end']) ?>
+                        <?php endif; ?>
                     </div>
                 </td>
                 <td class="rates__price">
                     <?= format_sum($bet['sum']) ?>
                 </td>
                 <td class="rates__time">
-                    <?= $bet['date_add'] ?>
+                    <?= rate_dt_add($bet['date_add']) ?>
                 </td>
             </tr>
         <?php endforeach; ?>

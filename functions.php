@@ -499,13 +499,10 @@ function get_bets_history_by_lot_id($link, $data)
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
-
-
 /**
  * Вычисляем победителя по последней ставке
  *
  * @param mysqli $link  Ресурс соединения
- * @param array $data Данные для заполнения
  *
  * @return array Массив с данными о победителе
  */
@@ -533,8 +530,6 @@ function get_winner($link)
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
-
-
 /**
  * Добавляет в таблицу с лотом победителя
  *
@@ -557,4 +552,33 @@ function add_winner_to_lot($link, $data)
     }
 
     return $result;
+}
+
+/**
+ * Отображает дату создания ставки для лота.
+ *
+ * @param $date Дата создания
+ *
+ * @return mixed
+ */
+function rate_dt_add($date)
+{
+    $ts = time();
+    $dt_add = strtotime($date);
+    $ts_diff = $ts - $dt_add;
+
+    if ($ts_diff >= 3600 && $ts_diff < 3600 * 24) {
+        $hours = floor($ts_diff / 3600);
+        $noun = get_noun_plural_form($hours, 'час', 'часа', 'часов');
+        return $hours . ' ' . $noun . ' назад';
+    } elseif ($ts_diff >= 60 && $ts_diff < 3600) {
+        $minutes = str_pad(floor(($ts_diff % 3600) / 60), "1", '0', STR_PAD_LEFT);
+        $noun = get_noun_plural_form($minutes, 'минута', 'минуты', 'минут');
+        return $minutes . ' ' . $noun . ' назад';
+    } elseif ($ts_diff < 60) {
+        $noun = get_noun_plural_form($ts_diff, 'секунда', 'секунды', 'секунд');
+        return $ts_diff . ' ' . $noun . ' назад';
+    }
+
+    return date('d.m.y в H:i', $dt_add);
 }
