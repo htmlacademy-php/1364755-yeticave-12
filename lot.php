@@ -10,6 +10,7 @@ $categories = get_categories($connect);
 $lot_bets = get_bets_by_lot_id($connect, [$lot_id]);
 $current_price = $lot_bets ? $lot_bets[0]['sum'] : $lot['starting_price'];
 $min_bet = $current_price + $lot['bet_step'];
+$bets_history = get_bets_history_by_lot_id($connect, [$lot_id]);
 $errors = [];
 $value = [];
 
@@ -19,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $data['lot_id'] = $lot_id;
     $value = $data['sum'];
 
-    if (!is_int($value) || $value < $min_bet) {
+    if ($value < $min_bet) {
         $errors = 'Введите целое число, которое больше либо равно минимальной ставке';
     }
 
@@ -38,7 +39,8 @@ $page_content = include_template('lot.php', [
     'value' => $value,
     'errors' => $errors,
     'categories' => $categories,
-    'lot' => $lot
+    'lot' => $lot,
+    'bets_history' => $bets_history
 ]);
 
 if (empty($lot)) {

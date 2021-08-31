@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Округляет введёную стоимость лота до целого числа и возвращает значение со знаком '₽'
  *
@@ -20,13 +21,13 @@ function format_sum($price)
  *
  * @param string $date Дата в виде строки
  *
- * @return string Время в часах и минутах, разделение через ':'
+ * @return mixed Время в часах и минутах, разделение через ':' либо строка "Торги окончены"
  */
 function get_date_range($date)
 {
     $seconds_range = strtotime($date) - time();
     $hours = str_pad((floor($seconds_range / 3600)), 2, '0', STR_PAD_LEFT);
-    $timer = 'Время истекло';
+    $timer = 'Торги окончены';
 
     if ($seconds_range >= 0) {
         $timer = $hours . ':' . date("i", $seconds_range);
@@ -59,8 +60,10 @@ function get_hours($date)
 function get_lots($link)
 {
     if ($link) {
-        $sql = 'SELECT lot_id, l.name AS lot_name, c.name AS category_name, starting_price, img, date_end,
-        c.category_id FROM lots l JOIN categories c ON l.category_id = c.category_id ORDER BY date_add DESC';
+        $sql = 'SELECT lot_id, l.name AS lot_name, c.name AS category_name, starting_price, img, date_end, c.category_id
+        FROM lots l
+        JOIN categories c ON l.category_id = c.category_id
+        ORDER BY date_add DESC';
         $result = mysqli_query($link, $sql);
     } else {
         $result = mysqli_connect_error();
@@ -113,7 +116,9 @@ function get_lot_by_id($link, $data)
     if (!$link) {
         $result = mysqli_connect_error();
     }
-    $sql = 'SELECT l.*, c.name AS category_name FROM lots l JOIN categories c ON l.category_id
+    $sql = 'SELECT l.*, c.name AS category_name
+    FROM lots l
+    JOIN categories c ON l.category_id
     = c.category_id WHERE lot_id = ?';
     $stmt = db_get_prepare_stmt($link, $sql, [$data]);
     if ($stmt) {
@@ -293,8 +298,9 @@ function search_by_lots($link, $data)
     if (!$link) {
         $result = mysqli_connect_error();
     }
-    $sql = 'SELECT lot_id, l.name AS lot_name, c.name AS category_name, starting_price, img, date_end,
-    c.category_id FROM lots l JOIN categories c ON l.category_id = c.category_id
+    $sql = 'SELECT lot_id, l.name AS lot_name, c.name AS category_name, starting_price, img, date_end, c.category_id
+    FROM lots l
+    JOIN categories c ON l.category_id = c.category_id
     WHERE date_end > NOW() AND MATCH(l.name, description)
     AGAINST(?) ORDER BY date_add DESC LIMIT ? OFFSET ?';
     $stmt = db_get_prepare_stmt($link, $sql, $data);
@@ -321,9 +327,11 @@ function get_lots_by_category($link, $data)
     if (!$link) {
         $result = mysqli_connect_error();
     }
-    $sql = 'SELECT lot_id, l.name AS lot_name, c.name AS category_name, starting_price, img, date_end,
-    c.category_id FROM lots l JOIN categories c ON l.category_id = c.category_id WHERE date_end > NOW()
-    AND c.category_id = ? ORDER BY date_add DESC LIMIT ? OFFSET ?';
+    $sql = 'SELECT lot_id, l.name AS lot_name, c.name AS category_name, starting_price, img, date_end, c.category_id
+    FROM lots l
+    JOIN categories c ON l.category_id = c.category_id
+    WHERE date_end > NOW() AND c.category_id = ?
+    ORDER BY date_add DESC LIMIT ? OFFSET ?';
     $stmt = db_get_prepare_stmt($link, $sql, $data);
     if ($stmt) {
         mysqli_stmt_execute($stmt);
@@ -349,7 +357,7 @@ function add_bet($link, $data)
         $result = mysqli_connect_error();
     }
     $sql = 'INSERT INTO bets (sum, user_id, lot_id) VALUES ( ?, ?, ?)';
-    $stmt= db_get_prepare_stmt($link, $sql, $data);
+    $stmt = db_get_prepare_stmt($link, $sql, $data);
     if ($stmt) {
         $result = mysqli_stmt_execute($stmt);
     } else {
@@ -398,7 +406,7 @@ function add_lot_id_to_user($link, $data)
         $result = mysqli_connect_error();
     }
     $sql = 'UPDATE users SET lot_id = ? WHERE user_id = ?';
-    $stmt= db_get_prepare_stmt($link, $sql, $data);
+    $stmt = db_get_prepare_stmt($link, $sql, $data);
     if ($stmt) {
         $result = mysqli_stmt_execute($stmt);
     } else {
@@ -422,7 +430,126 @@ function add_bet_id_to_user($link, $data)
         $result = mysqli_connect_error();
     }
     $sql = 'UPDATE users SET bet_id = ? WHERE user_id = ?';
-    $stmt= db_get_prepare_stmt($link, $sql, $data);
+    $stmt = db_get_prepare_stmt($link, $sql, $data);
+    if ($stmt) {
+        $result = mysqli_stmt_execute($stmt);
+    } else {
+        $result = mysqli_error($link);
+    }
+
+    return $result;
+}
+
+/**
+ * Получение всех ставок пользователя
+ *
+ * @param mysqli $link  Ресурс соединения
+ * @param array $data Данные для заполнения
+ *
+ * @return array Массив ставок
+ */
+function get_bets_by_user_id($link, $data)
+{
+    if (!$link) {
+        $result = mysqli_connect_error();
+    }
+    $sql = 'SELECT b.date_add, b.sum, b.user_id, l.date_end, l.user_win_id, c.name
+    AS category_name, l.name, l.lot_id, l.img, u.contacts
+    FROM bets b
+    JOIN lots l ON b.lot_id = l.lot_id
+    JOIN categories c ON l.category_id = c.category_id
+    JOIN users u ON l.user_id = u.user_id
+    WHERE b.user_id = ?';
+    $stmt = db_get_prepare_stmt($link, $sql, $data);
+    if ($stmt) {
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+    } else {
+        $result = mysqli_error($link);
+    }
+
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+/**
+ * Получение истории ставок для лота
+ *
+ * @param mysqli $link  Ресурс соединения
+ * @param array $data Данные для заполнения
+ *
+ * @return array Массив ставок
+ */
+function get_bets_history_by_lot_id($link, $data)
+{
+    if (!$link) {
+        $result = mysqli_connect_error();
+    }
+    $sql = 'SELECT u.name, b.sum, b.date_add
+    FROM bets b
+    JOIN users u ON b.user_id = u.user_id
+    WHERE b.lot_id = ?';
+    $stmt = db_get_prepare_stmt($link, $sql, $data);
+    if ($stmt) {
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+    } else {
+        $result = mysqli_error($link);
+    }
+
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+
+
+/**
+ * Вычисляем победителя по последней ставке
+ *
+ * @param mysqli $link  Ресурс соединения
+ * @param array $data Данные для заполнения
+ *
+ * @return array Массив с данными о победителе
+ */
+function get_winner($link)
+{
+    if (!$link) {
+        $result = mysqli_connect_error();
+    }
+    $sql = 'SELECT l.lot_id, l.name AS lot_name, l.date_end, l.user_win_id,
+    b.date_add, b.sum, b.user_id, u.name, u.email
+    FROM lots l
+    JOIN bets b ON l.lot_id = b.lot_id
+    JOIN users u ON b.user_id = u.user_id
+    WHERE date_end <= NOW()
+    AND user_win_id IS NULL
+    AND b.sum = (SELECT MAX(b.sum) FROM bets b WHERE b.lot_id = l.lot_id)';
+    $stmt = db_get_prepare_stmt($link, $sql);
+    if ($stmt) {
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+    } else {
+        $result = mysqli_error($link);
+    }
+
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+
+
+/**
+ * Добавляет в таблицу с лотом победителя
+ *
+ * @param mysqli $link  Ресурс соединения
+ * @param array $data Данные для заполнения
+ *
+ * @return bool Возвращает true в случае успешного завершения или false в случае возникновения ошибки
+ */
+function add_winner_to_lot($link, $data)
+{
+    if (!$link) {
+        $result = mysqli_connect_error();
+    }
+    $sql = 'UPDATE lots SET user_win_id = ? WHERE lot_id = ?';
+    $stmt = db_get_prepare_stmt($link, $sql, $data);
     if ($stmt) {
         $result = mysqli_stmt_execute($stmt);
     } else {

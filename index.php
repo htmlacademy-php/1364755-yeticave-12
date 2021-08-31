@@ -5,6 +5,7 @@ setlocale(LC_ALL, 'ru_RU');
 require_once('functions.php');
 require_once('helpers.php');
 require_once('config/db.php');
+require_once('get-winner.php');
 
 $lots = get_lots($connect);
 $categories = get_categories($connect);

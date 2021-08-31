@@ -20,7 +20,8 @@ CREATE TABLE lots (
   starting_price INT,
   bet_step INT,
   date_end DATETIME,
-  user_id INT NOT NULL
+  user_id INT NOT NULL,
+  user_win_id INT
 );
 
 CREATE TABLE bets (
