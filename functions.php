@@ -302,7 +302,7 @@ function search_by_lots($link, $data)
     FROM lots l
     JOIN categories c ON l.category_id = c.category_id
     WHERE date_end > NOW() AND MATCH(l.name, description)
-    AGAINST(?) ORDER BY date_add DESC LIMIT ? OFFSET ?';
+    AGAINST(? IN BOOLEAN MODE) ORDER BY date_add DESC LIMIT ? OFFSET ?';
     $stmt = db_get_prepare_stmt($link, $sql, $data);
     if ($stmt) {
         mysqli_stmt_execute($stmt);
@@ -561,7 +561,7 @@ function add_winner_to_lot($link, $data)
  *
  * @return mixed
  */
-function rate_dt_add($date)
+function bet_date_add($date)
 {
     $ts = time();
     $dt_add = strtotime($date);

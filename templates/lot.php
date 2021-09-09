@@ -56,7 +56,7 @@
                         <tr class="history__item">
                             <td class="history__name"><?= $history['name'] ?></td>
                             <td class="history__price"><?= format_sum($history['sum']) ?></td>
-                            <td class="history__time"><?= rate_dt_add($history['date_add']) ?></td>
+                            <td class="history__time"><?= bet_date_add($history['date_add']) ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </table>

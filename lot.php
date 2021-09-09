@@ -24,6 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $errors = 'Введите целое число, которое больше либо равно минимальной ставке';
     }
 
+    if ($lot['user_id'] == $data['user_id']) {
+        $errors = 'Вы не можете сделать ставку к своему лоту';
+    }
+
     if (empty($errors)) {
         add_bet($connect, $data);
         $bet_id = mysqli_insert_id($connect);

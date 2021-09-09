@@ -54,7 +54,7 @@
                     <?= format_sum($bet['sum']) ?>
                 </td>
                 <td class="rates__time">
-                    <?= rate_dt_add($bet['date_add']) ?>
+                    <?= bet_date_add($bet['date_add']) ?>
                 </td>
             </tr>
         <?php endforeach; ?>
