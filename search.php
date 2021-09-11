@@ -13,11 +13,7 @@ $page_items = 9;
 $pages = [];
 $pages_count = 0;
 
-$error = validate_length($search, 1, 15);
-if ($error) {
-    $lots = get_lots($connect);
-    $page_content = include_template('main.php', ['categories' => $categories, 'lots' => $lots]);
-} elseif ($search) {
+if ($search) {
     $offset = ($current_page - 1) * $page_items;
     $data = [$search . '*', $page_items, $offset];
     $lots = search_by_lots($connect, $data);
@@ -43,7 +39,6 @@ $page_content = include_template('search.php', [
 ]);
 
 $layout_content = include_template('layout.php', [
-    'error' => $error,
     'content' => $page_content,
     'search' => $search,
     'categories' => $categories,
