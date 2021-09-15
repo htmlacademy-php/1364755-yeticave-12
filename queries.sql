@@ -41,7 +41,7 @@ WHERE user_id = 2;
 -- получить все категории
 SELECT name FROM categories;
 -- получить самые новые лоты
-SELECT name, c.name, starting_price, img, c.category_id FROM lots l JOIN categories c ON l.category_id = c.category_id ORDER BY date_add DESC;
+SELECT l.name, c.name, starting_price, img, c.category_id FROM lots l JOIN categories c ON l.category_id = c.category_id ORDER BY date_add DESC;
 -- показать лот по его ID
 SELECT l.*, c.name FROM lots l JOIN categories c ON l.category_id = c.category_id WHERE lot_id = 2;
 -- обновить название лота по его идентификатору

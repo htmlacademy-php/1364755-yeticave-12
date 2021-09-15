@@ -1,20 +1,21 @@
 <?php
-date_default_timezone_set("Europe/Moscow");
-setlocale(LC_ALL, 'ru_RU');
 
 require_once('functions.php');
 require_once('helpers.php');
 require_once('config/db.php');
-require_once('get-winner.php');
 
-$lots = get_lots($connect);
 $categories = get_categories($connect);
+$user_id = $_SESSION['user']['user_id'];
+$my_bets = get_bets_by_user_id($connect, [$user_id]);
 
-$page_content = include_template('main.php', ['categories' => $categories, 'lots' => $lots]);
+$page_content = include_template('my-bets.php', [
+    'categories' => $categories,
+    'my_bets' => $my_bets
+]);
 $layout_content = include_template('layout.php', [
     'content' => $page_content,
     'categories' => $categories,
-    'title' => 'Главная'
+    'title' => 'Мои ставки'
 ]);
 
 print($layout_content);

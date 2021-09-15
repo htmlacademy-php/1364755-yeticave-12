@@ -20,12 +20,13 @@ CREATE TABLE lots (
   starting_price INT,
   bet_step INT,
   date_end DATETIME,
-  user_id INT NOT NULL
+  user_id INT NOT NULL,
+  user_win_id INT
 );
 
 CREATE TABLE bets (
   bet_id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-  date_add DATETIME,
+  date_add DATETIME DEFAULT CURRENT_TIMESTAMP,
   sum INT,
   user_id INT NOT NULL,
   lot_id INT NOT NULL

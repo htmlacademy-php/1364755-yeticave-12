@@ -2,7 +2,7 @@
     <ul class="nav__list container">
         <?php foreach ($categories as $category) : ?>
             <li class="nav__item">
-                <a href="all-lots.html"><?= strip_tags($category['name']) ?></a>
+                <a href="all-lots.php?category_id=<?= $category['category_id'] ?>"><?= strip_tags($category['name']) ?></a>
             </li>
         <?php endforeach; ?>
     </ul>
