@@ -4,7 +4,7 @@ require_once('functions.php');
 require_once('helpers.php');
 require_once('config/db.php');
 
-$lot_id = filter_input(INPUT_GET, 'id');
+$lot_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 $lot = get_lot_by_id($connect, $lot_id);
 $categories = get_categories($connect);
 $lot_bets = get_bets_by_lot_id($connect, [$lot_id]);
@@ -14,8 +14,10 @@ $bets_history = get_bets_history_by_lot_id($connect, [$lot_id]);
 $errors = [];
 $value = [];
 
+$page_content = include_template('404.php', ['categories' => $categories]);
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $data = filter_input_array(INPUT_POST, ['sum' => FILTER_VALIDATE_INT]);
+    $data['sum'] = filter_input(INPUT_POST, 'sum', FILTER_VALIDATE_INT);
     $data['user_id'] = $_SESSION['user']['user_id'];
     $data['lot_id'] = $lot_id;
     $value = $data['sum'];
@@ -37,18 +39,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-$page_content = include_template('lot.php', [
-    'current_price' => $current_price,
-    'min_bet' => $min_bet,
-    'value' => $value,
-    'errors' => $errors,
-    'categories' => $categories,
-    'lot' => $lot,
-    'bets_history' => $bets_history
-]);
-
-if (empty($lot)) {
-    $page_content = include_template('404.php', ['categories' => $categories]);
+if ($lot) {
+    $page_content = include_template('lot.php', [
+        'current_price' => $current_price,
+        'min_bet' => $min_bet,
+        'value' => $value,
+        'errors' => $errors,
+        'categories' => $categories,
+        'lot' => $lot,
+        'bets_history' => $bets_history
+    ]);
 }
 
 $layout_content = include_template('layout.php', [

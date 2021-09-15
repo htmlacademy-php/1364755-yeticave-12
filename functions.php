@@ -60,7 +60,9 @@ function get_hours($date)
 function get_lots($link)
 {
     if ($link) {
-        $sql = 'SELECT lot_id, l.name AS lot_name, c.name AS category_name, starting_price, img, date_end, c.category_id
+        $sql = 'SELECT lot_id, l.name
+        AS lot_name, c.name
+        AS category_name, starting_price, img, date_end, c.category_id
         FROM lots l
         JOIN categories c ON l.category_id = c.category_id
         ORDER BY date_add DESC';
@@ -116,10 +118,12 @@ function get_lot_by_id($link, $data)
     if (!$link) {
         $result = mysqli_connect_error();
     }
-    $sql = 'SELECT l.*, c.name AS category_name
+    $sql = 'SELECT l.*, c.name
+    AS category_name
     FROM lots l
-    JOIN categories c ON l.category_id
-    = c.category_id WHERE lot_id = ?';
+    JOIN categories c
+    ON l.category_id = c.category_id
+    WHERE lot_id = ?';
     $stmt = db_get_prepare_stmt($link, $sql, [$data]);
     if ($stmt) {
         mysqli_stmt_execute($stmt);
@@ -511,14 +515,14 @@ function get_winner($link)
     if (!$link) {
         $result = mysqli_connect_error();
     }
-    $sql = 'SELECT l.lot_id, l.name AS lot_name, l.date_end, l.user_win_id,
-    b.date_add, b.sum, b.user_id, u.name, u.email
+    $sql = 'SELECT l.lot_id, l.name
+    AS lot_name, l.date_end, l.user_win_id, b.date_add, b.sum, b.user_id, u.name, u.email
     FROM lots l
     JOIN bets b ON l.lot_id = b.lot_id
     JOIN users u ON b.user_id = u.user_id
     WHERE date_end <= NOW()
     AND user_win_id IS NULL
-    AND b.sum = (SELECT MAX(b.sum) FROM bets b WHERE b.lot_id = l.lot_id)';
+    AND b.sum = (SELECT MAX(alt.sum) FROM bets alt WHERE alt.lot_id = l.lot_id)';
     $stmt = db_get_prepare_stmt($link, $sql);
     if ($stmt) {
         mysqli_stmt_execute($stmt);
@@ -559,7 +563,7 @@ function add_winner_to_lot($link, $data)
  *
  * @param $date Дата создания
  *
- * @return mixed
+ * @return mixed Отформатированный вывод даты
  */
 function bet_date_add($date)
 {

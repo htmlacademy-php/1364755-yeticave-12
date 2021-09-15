@@ -30,7 +30,7 @@
                                 <span class="lot__cost"><?= format_sum($lot['starting_price']) ?></span>
                             </div>
                             <div class="lot__timer timer
-                            <?php $hours = get_hours($lot['date_end']) ?>
+                            <?php $hours = get_hours($lot['date_end']); ?>
                             <?php if ($hours <= 0) : ?>
                                 timer--finishing
                             <?php endif; ?>">

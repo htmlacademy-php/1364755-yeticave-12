@@ -34,7 +34,7 @@
                 </td>
                 <td class="rates__timer">
                     <div class="timer
-                    <?php $hours = get_hours($bet['date_end']) ?>
+                    <?php $hours = get_hours($bet['date_end']); ?>
                     <?php if ($hours <= 0) : ?>
                         timer--finishing
                     <?php elseif ($bet['user_id'] == $bet['user_win_id']) : ?>

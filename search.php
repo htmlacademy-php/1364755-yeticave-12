@@ -5,7 +5,7 @@ require_once('helpers.php');
 require_once('config/db.php');
 
 $categories = get_categories($connect);
-$search = filter_input(INPUT_GET, 'search');
+$search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
 $current_page = $_GET['page'] ?? 1;
 
 $lots = [];

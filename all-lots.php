@@ -18,18 +18,18 @@ $lots = get_lots_by_category($connect, $data);
 $items_count = count($lots);
 $pages_count = ceil($items_count / $page_items);
 
-if ($pages_count > 0) {
-    $pages = range(1, $pages_count);
-}
-
-if (count($lots)) {
-    $category_name = $lots[0]['category_name'];
-};
-
 if ($current_page < 1 || ($current_page > $pages_count && $pages_count != 0)) {
     http_response_code(404);
     die();
 }
+
+if ($pages_count > 0) {
+    $pages = range(1, $pages_count);
+}
+
+if ($items_count) {
+    $category_name = $lots[0]['category_name'];
+};
 
 $page_content = include_template('all-lots.php', [
     'categories' => $categories,
