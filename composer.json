@@ -1,0 +1,14 @@
+{
+    "name": "freude/yeticave",
+    "description": "auction site\u001b[D\u001b[D\u001b[D\u001b[D\u001b[C\u001b[C\u001b website",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Вячеслав Жубрин",
+            "email": "vyacheslavzhubrin@gmail.com"
+        }
+    ],
+    "require": {
+        "swiftmailer/swiftmailer": "^6.2"
+    }
+}
