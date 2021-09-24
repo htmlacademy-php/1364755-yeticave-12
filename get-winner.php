@@ -12,7 +12,7 @@ if ($is_winner) {
         $data = [$winner['user_id'], $winner['lot_id']];
         add_winner_to_lot($connect, $data);
 
-        $domen = $_SERVER['HTTP_HOST'];
+        $domain = $_SERVER['HTTP_HOST'];
         $smtp_host = 'smtp.mailtrap.io';
         $email_from = 'keks@phpdemo.ru';
         $username = '75f3c8c888f4c0';
@@ -20,7 +20,7 @@ if ($is_winner) {
         $smtp_port = '2525';
         $target_email = $winner['email'];
         $target_name = $winner['name'];
-        $message_content = include_template('email.php', ['winner' => $winner, 'domen' => $domen]);
+        $message_content = include_template('email.php', ['winner' => $winner, 'domain' => $domain]);
 
         $transport = (new Swift_SmtpTransport($smtp_host, $smtp_port))
             ->setUsername($username)
