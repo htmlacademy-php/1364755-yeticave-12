@@ -12,31 +12,34 @@ if ($is_winner) {
         $data = [$winner['user_id'], $winner['lot_id']];
         add_winner_to_lot($connect, $data);
 
-        $smtp_host = 'mailtrap.io';
+        $domen = $_SERVER['HTTP_HOST'];
+        $smtp_host = 'smtp.mailtrap.io';
         $email_from = 'keks@phpdemo.ru';
-        $password = 'htmlacademy';
-        $smtp_port = '25';
+        $username = '75f3c8c888f4c0';
+        $password = 'd3bf00f9a2376d';
+        $smtp_port = '2525';
         $target_email = $winner['email'];
         $target_name = $winner['name'];
-        $message_content = include_template('email.php', ['winner' => $winner]);
+        $message_content = include_template('email.php', ['winner' => $winner, 'domen' => $domen]);
 
         $transport = (new Swift_SmtpTransport($smtp_host, $smtp_port))
-            ->setUsername($email_from)
-            ->setPassword($password);
+            ->setUsername($username)
+            ->setPassword($password)
+            ->setEncryption('TLS');
 
         $mailer = new Swift_Mailer($transport);
 
         $message = (new Swift_Message('Ваша ставка победила'))
-            ->setFrom([$email_from => 'keks@phpdemo.ru'])
+            ->setFrom([$email_from => 'Кекс'])
             ->setTo([$target_email => $target_name])
             ->setBody($message_content, 'text/html');
 
         $result = $mailer->send($message);
 
         if ($result) {
-            print('Сообщение успешно отправлено');
+            print('Письмо успешно отправлено');
         } else {
-            print('Не удалось отправить сообщение');
+            print('Не удалось отправить письмо');
         }
     }
 }
