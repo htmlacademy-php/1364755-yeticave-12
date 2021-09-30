@@ -34,7 +34,7 @@
                             <span class="lot-item__cost"><?= format_sum($current_price) ?></span>
                         </div>
                         <div class="lot-item__min-cost">
-                            Мин. ставка <span><?= format_sum($min_bet) ?></span>
+                            Мин. ставка <span><?= format_sum($lot['bet_step']) ?></span>
                         </div>
                     </div>
                     <form class="lot-item__form" action="lot.php?id=<?= $lot['lot_id'] ?>" method="post" autocomplete="off">
