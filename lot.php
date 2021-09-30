@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $value = $data['sum'];
     $difference = $value - $current_price;
 
-    if ($difference % $min_bet) {
+    if ($difference % $lot['bet_step']) {
         $errors = 'Шаг ставки должен быть кратен минимальной ставке';
     }
 
