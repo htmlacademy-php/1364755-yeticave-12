@@ -21,9 +21,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $data['user_id'] = $_SESSION['user']['user_id'];
     $data['lot_id'] = $lot_id;
     $value = $data['sum'];
+    $difference = $value - $current_price;
+
+    if ($difference % $min_bet) {
+        $errors = 'Шаг ставки должен быть кратен минимальной ставке';
+    }
 
     if ($value < $min_bet) {
-        $errors = 'Введите целое число, которое больше либо равно минимальной ставке';
+        $errors = 'Введите целое число, которое больше либо равно мин. ставке + текущая цена';
     }
 
     if ($lot['user_id'] == $data['user_id']) {
