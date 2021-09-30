@@ -33,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (password_verify($data['password'], $user['password'])) {
             $_SESSION['user'] = $user;
         } else {
+            $data['password'] = [];
             $errors['password'] = 'Неверный пароль';
         }
     }
